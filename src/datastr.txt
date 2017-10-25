@@ -1,0 +1,15 @@
+Object: NPC/Player;
+Player: player1/player2
+NPC: static/dynamic
+Static: Item/Bliock
+Dynamic: monster, boss
+
+type allObjects = [Object]
+
+data GameState = GameState {allObjects, Camera, Scores}
+
+Common: Position (coordinates), picture (show instance)
+Player: commands, score, state (e.g. small/big))
+
+
+
