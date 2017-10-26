@@ -2,7 +2,7 @@ module View where
 
 import Model
 
-import Graphics.Gloss hiding (Point)
+import Graphics.Gloss
 import Graphics.Gloss.Data.Bitmap
 
 
@@ -14,13 +14,13 @@ showRectObject :: Point -> RectObject -> Picture
 showRectObject cam (RectObject (p1, p2, p3, p4)) = polygon $ map (levelToScreenCoord . (absToRelCoord cam)) [p1, p2, p3, p4]
 
 smallGreenSquare :: Point -> Picture
-smallGreenSquare (n1, n2) = polygon [(-200 + 10*n1, -200 + 10*n2), (-200 + 10*n1, -190 + 10*n2), (-190 + 10*n1, -190 + 10*n2), (-190 + 10*n1, -200 + 10*n2)]
+smallGreenSquare (n1, n2) = polygon [(n1, n2), (n1, n2 + 10), (n1 + 10, n2 + 10), (n1 + 10, n2)]
 -- coordinates are x and y w.r.t. to centre of the window
 
 viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate = case infoToShow gstate of -- different game states to be def.
     ShowNothing -> pic 
-    ShowSquare p -> Pictures [Color green (smallGreenSquare (absToRelCoord cam p)), 
-                            Color red (showRectObject cam rect1), 
-                            Color red (showRectObject cam rect2)]
+    ShowSquare p -> Pictures [Color red (showRectObject cam rect1), 
+                            Color red (showRectObject cam rect2),
+                            Color green (smallGreenSquare ((levelToScreenCoord . (absToRelCoord cam)) p))]
                         where cam = cornerAbsPos (cameraInfo gstate)

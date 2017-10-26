@@ -1,7 +1,8 @@
 module Model where
 
+import Graphics.Gloss.Data.Point
 -- new part
-type Point = (Float, Float) -- for coordinates
+-- type Point = (Float, Float) -- for coordinates
 
 data CameraInfo = CameraInfo { -- info about "camera"
                     cornerAbsPos :: Point, -- pos. of bottom-left corner
@@ -19,8 +20,12 @@ data LevelMap = LevelMap {
                     mapLength :: Int
                 }
 
+-- instance Num (Float, Float) where
+--     (a, b) + (c, d) = (a + c, b + d)
+
 absToRelCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
 absToRelCoord (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+-- absToRelCoord p1 p2 = p1 + p2
 
 levelToScreenCoord :: Point -> Point -- because left-bottom of level has coord. (0, 0)
 -- for the screen it is (-width/2, -height/2)
@@ -49,7 +54,7 @@ data GameState = GameState {
                 }
 
 initialState :: GameState
-initialState = GameState (ShowSquare (5, 0)) (CameraInfo (-100, 0) 400 400) 0
+initialState = GameState (ShowSquare (200, 200)) (CameraInfo (0, 0) 400 400) 0
 
 nO_SECS_BETWEEN_CYCLES :: Float -- what is that for???
 nO_SECS_BETWEEN_CYCLES = 5
