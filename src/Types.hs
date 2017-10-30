@@ -6,11 +6,8 @@ import Graphics.Gloss.Data.Point
 data Direction = Left | Up | Right | Down
 	deriving (Eq, Show, Enum)
 
-data Action = Action {
-	noveDirection :: Direction,		-- What direction this action will move
-	movementSpeed :: Float,			-- How fast this action will move
-	actionStartTime :: Float		-- At what (game)time the action was initiated
-}
+data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actionStartTime :: Float }
+	deriving (Eq, Show)
 
 
 
