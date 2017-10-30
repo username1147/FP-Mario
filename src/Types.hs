@@ -1,5 +1,6 @@
 module Types where
 
+import Graphics.Gloss.Data.Point
 
 
 data Direction = Left | Up | Right | Down
@@ -14,7 +15,7 @@ data Action = Action {
 
 
 class Moveable a where
-	position :: a -> Point
+	getPosition :: a -> Point
 	move :: a -> Action -> a
 
 
@@ -36,21 +37,21 @@ data Rectangle = Rectangle Point Point
 
 
 
-data Block = Block { position :: Point, destructable :: BlockDestructable, coin :: Maybe Coin }
+data Block = Block { blockPos :: Point, blockDestructable :: BlockDestructable, coin :: Maybe Coin }
 	deriving (Eq, Show)
 
-data FloorBlock = FloorBlock { position :: Point }
+data FloorBlock = FloorBlock { floorBlockPos :: Point }
 	deriving (Eq, Show)
 
-data Pipe = Pipe { position :: Point }
+data Pipe = Pipe { pipePos :: Point }
 	deriving (Eq, Show)
 
-data ItemBlock = ItemBlock { position :: Point, destructable :: BlockDestructable, mushroom :: Mushroom }
+data ItemBlock = ItemBlock { itemBockPos :: Point, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
 	deriving (Eq, Show)
 
 
 
-data Enemy = Enemy { position :: Point, actions :: [Action] }
+data Enemy = Enemy { enemyPos :: Point, enemyActions :: [Action] }
 	deriving (Eq, Show)
 
 
@@ -63,7 +64,7 @@ data PlayerSize = Normal | Large
 	deriving (Eq, Show, Enum)
 
 
-data Player = Player { position :: Point, controlledBy :: PlayerControlType, score :: Int, actions :: [Action], size :: PlayerSize }
+data Player = Player { playerPos :: Point, controlledBy :: PlayerControlType, score :: Int, playerActions :: [Action], size :: PlayerSize }
 	deriving (Eq, Show)
 
 
