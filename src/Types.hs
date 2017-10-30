@@ -13,6 +13,11 @@ data Action = Action {
 
 
 
+class Move Action a where
+	move :: a -> Action -> a
+
+
+
 data Coin = Coin Int
 	deriving (Eq, Show)
 
