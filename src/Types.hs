@@ -13,7 +13,8 @@ data Action = Action {
 
 
 
-class Move Action a where
+class Moveable a where
+	position :: a -> Point
 	move :: a -> Action -> a
 
 
