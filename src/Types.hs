@@ -1,12 +1,17 @@
 module Types where
 
-import Graphics.Gloss.Data.Point
+
 
 
 data Direction = Left | Up | Right | Down
 	deriving (Eq, Show, Enum)
 
 data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actionStartTime :: Float }
+	deriving (Eq, Show)
+
+
+
+data Point = Point { x :: Double, y :: Double }
 	deriving (Eq, Show)
 
 
@@ -29,7 +34,7 @@ data BlockDestructable = Destructable | Indestructable
 	deriving (Eq, Show, Enum)
 
 
-data Rectangle = Rectangle Point Point
+data Rectangle = Rectangle { topLeft :: Point, bottomRight :: Point}
 	deriving (Eq, Show)
 
 
@@ -66,9 +71,9 @@ data Player = Player { playerPos :: Point, controlledBy :: PlayerControlType, sc
 
 
 data Camera = Camera {
-	position :: Point,				-- Position of the camera in the world
-	cameraWidth :: Integer,			-- How wide (horizontal) the camera can see
-	cameraHeight :: Integer			-- How high (vertical) the camera can see
+	position :: Point,			-- Position of the camera in the world
+	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
+	cameraHeight :: Int			-- How high (vertical) the camera can see
 }
 
 
