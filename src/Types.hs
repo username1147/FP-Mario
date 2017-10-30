@@ -12,66 +12,68 @@ data Action = Action {
 }
 
 
-data ItemType = Coin | Mushroom
-	deriving (Eq, Show, Enum)
 
-data Item = Item {
-	type :: ItemType,				-- What type of item
-	duration :: Float,				-- How long the item will last when used
-	itemUsedTime :: Float			-- When the item was used
-}
+data Coin = Coin Int
+	deriving (Eq, Show)
+
+data Mushroom = Mushroom
+	deriving (Eq, Show)
 
 
--- Dynamic objects can move, Static objects don't move
-data ObjectType = Static | Dynamic
-	deriving (Eq, Show, Enum)
 
-data StaticObjectType = NormalBlock | FloorBlock | Pipe | ItemBlock
+data BlockDestructable = Destructable | Indestructable
 	deriving (Eq, Show, Enum)
 
 
--- For dynamic objects, they can be either NPC controlled, or player controlled
-data ObjectControlType = NPC | Player
-	deriving (Eq, Show, Enum)
+data Rectangle = Rectangle Point Point
+	deriving (Eq, Show)
+
+
+
+data Block = Block { position :: Point, destructable :: BlockDestructable, coin :: Maybe Coin }
+	deriving (Eq, Show)
+
+data FloorBlock = FloorBlock { position :: Point }
+	deriving (Eq, Show)
+
+data Pipe = Pipe { position :: Point }
+	deriving (Eq, Show)
+
+data ItemBlock = ItemBlock { position :: Point, destructable :: BlockDestructable, mushroom :: Mushroom }
+	deriving (Eq, Show)
+
+
+
+data Enemy = Enemy { position :: Point, actions :: [Action] }
+	deriving (Eq, Show)
+
+
 
 -- Player objects can be either controlled by Player1, or by Player2
 data PlayerControlType = Player1 | Player2
 	deriving (Eq, Show, Enum)
 
--- ObjectSize is only used for player-controlled objects, Big represents a
--- Mario after picking up a mushroom
-data ObjectSize = Normal | Big
+data PlayerSize = Normal | Large
 	deriving (Eq, Show, Enum)
 
--- Positions are respresented as 2D coordinates using an x and y for horizontal
--- and vertical positioning respectively
-data Position = Position {
-	x :: Float,
-	y :: Float
-}
 
-
-data Object = Object {
-	type :: ObjectType,				-- If its static or dynamic
-	breakable :: Maybe Bool,		-- If its a static object, is it breakable or not?
-	position :: Position,			-- Object position
-	controlType :: Maybe ObjectControlType,		-- If its a dynamic object, who controls it?
-	playerControl :: Maybe PlayerControlType,	-- If its a player object, which player controls it?
-	playerScore :: Maybe Integer,				-- If its a player object, what is his score?
-	items :: [Item],				-- List of items the object has or can drop
-	actions :: Maybe [Action],		-- For dynamic objects, what actions the object does
-	size :: Maybe ObjectSize		-- For player objects, what is the player size
-}
+data Player = Player { position :: Point, controlledBy :: PlayerControlType, score :: Int, actions :: [Action], size :: PlayerSize }
+	deriving (Eq, Show)
 
 
 data Camera = Camera {
-	position :: Position,			-- Position of the camera in the world
+	position :: Point,				-- Position of the camera in the world
 	cameraWidth :: Integer,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Integer			-- How high (vertical) the camera can see
 }
 
 
 data GameState = GameState {
-	objects :: [Object],			-- All the objects in the game
-	camera :: Camera				-- A camera to view the world
+	blocks :: [Block],
+	floorBlocks :: [FloorBlock],
+	pipes :: [Pipe],
+	itemBlocks :: [ItemBlock],
+	player :: Player,
+	enemies :: [Enemy],
+	camera :: Camera
 }
