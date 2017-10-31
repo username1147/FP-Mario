@@ -2,7 +2,6 @@ module Types where
 
 
 
-
 data Direction = Left | Up | Right | Down
 	deriving (Eq, Show, Enum)
 
@@ -12,14 +11,7 @@ data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actio
 
 
 data Point = Point { x :: Double, y :: Double }
-	deriving (Eq, Show)
-
-
-
-class Moveable a where
-	getPosition :: a -> Point
-	move :: a -> Action -> a
-
+	deriving (Eq, Ord, Show)
 
 
 data Coin = Coin Int
@@ -51,11 +43,13 @@ data Pipe = Pipe { pipePos :: Point }
 data ItemBlock = ItemBlock { itemBockPos :: Point, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
 	deriving (Eq, Show)
 
-
-
 data Enemy = Enemy { enemyPos :: Point, enemyActions :: [Action] }
 	deriving (Eq, Show)
 
+
+-- This object is used to handle collisions
+data Object = Object { objectPos :: Point, objectVelocity :: Point }
+	deriving (Eq, Show)
 
 
 -- Player objects can be either controlled by Player1, or by Player2
@@ -71,7 +65,7 @@ data Player = Player { playerPos :: Point, controlledBy :: PlayerControlType, sc
 
 
 data Camera = Camera {
-	position :: Point,			-- Position of the camera in the world
+	cameraPos :: Point,			-- Position of the camera in the world
 	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Int			-- How high (vertical) the camera can see
 }
@@ -86,3 +80,53 @@ data GameState = GameState {
 	enemies :: [Enemy],
 	camera :: Camera
 }
+
+
+
+
+
+class Moveable a where
+	getPosition :: a -> Point
+	move :: a -> Action -> a
+
+
+instance Moveable Block where
+	getPosition = blockPos
+	-- TODO: move
+
+instance Moveable FloorBlock where
+	getPosition = floorBlockPos
+	-- TODO: move
+
+instance Moveable Pipe where
+	getPosition = pipePos
+	-- TODO: move
+
+instance Moveable ItemBlock where
+	getPosition = itemBockPos
+	-- TODO: move
+
+instance Moveable Enemy where
+	getPosition = enemyPos
+	-- TODO: move
+
+instance Moveable Object where
+	getPosition = objectPos
+	-- TODO: move
+
+instance Moveable Player where
+	getPosition = playerPos
+	-- TODO: move
+
+instance Moveable Camera where
+	getPosition = cameraPos
+	-- TODO: move
+
+
+
+
+
+
+
+
+
