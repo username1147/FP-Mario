@@ -1,77 +1,134 @@
-module Types where
+{-# LANGUAGE DuplicateRecordFields #-}
 
+module Types where
 
 
 data Direction = Left | Up | Right | Down
 	deriving (Eq, Show, Enum)
 
-data Action = Action {
-	noveDirection :: Direction,		-- What direction this action will move
-	movementSpeed :: Float,			-- How fast this action will move
-	actionStartTime :: Float		-- At what (game)time the action was initiated
-}
+data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actionStartTime :: Float }
+	deriving (Eq, Show)
 
 
-data ItemType = Coin | Mushroom
-	deriving (Eq, Show, Enum)
 
-data Item = Item {
-	type :: ItemType,				-- What type of item
-	duration :: Float,				-- How long the item will last when used
-	itemUsedTime :: Float			-- When the item was used
-}
+data Point = Point { x :: Double, y :: Double }
+	deriving (Eq, Ord, Show)
 
 
--- Dynamic objects can move, Static objects don't move
-data ObjectType = Static | Dynamic
-	deriving (Eq, Show, Enum)
+data Coin = Coin Int
+	deriving (Eq, Show)
 
-data StaticObjectType = NormalBlock | FloorBlock | Pipe | ItemBlock
+data Mushroom = Mushroom
+	deriving (Eq, Show)
+
+
+
+data BlockDestructable = Destructable | Indestructable
 	deriving (Eq, Show, Enum)
 
 
--- For dynamic objects, they can be either NPC controlled, or player controlled
-data ObjectControlType = NPC | Player
-	deriving (Eq, Show, Enum)
+data Rectangle = Rectangle { topLeft :: Point, bottomRight :: Point}
+	deriving (Eq, Show)
+
+
+
+data Block = Block { pos :: Point, blockDestructable :: BlockDestructable, coin :: Maybe Coin }
+	deriving (Eq, Show)
+
+data FloorBlock = FloorBlock { pos :: Point }
+	deriving (Eq, Show)
+
+data Pipe = Pipe { pos :: Point }
+	deriving (Eq, Show)
+
+data ItemBlock = ItemBlock { pos :: Point, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
+	deriving (Eq, Show)
+
+data Enemy = Enemy { pos :: Point, enemyActions :: [Action] }
+	deriving (Eq, Show)
+
+
+-- This object is used to handle collisions
+data Object = Object { pos :: Point, objectVelocity :: Point }
+	deriving (Eq, Show)
+
 
 -- Player objects can be either controlled by Player1, or by Player2
 data PlayerControlType = Player1 | Player2
 	deriving (Eq, Show, Enum)
 
--- ObjectSize is only used for player-controlled objects, Big represents a
--- Mario after picking up a mushroom
-data ObjectSize = Normal | Big
+data PlayerSize = Normal | Large
 	deriving (Eq, Show, Enum)
 
--- Positions are respresented as 2D coordinates using an x and y for horizontal
--- and vertical positioning respectively
-data Position = Position {
-	x :: Float,
-	y :: Float
-}
 
-
-data Object = Object {
-	type :: ObjectType,				-- If its static or dynamic
-	breakable :: Maybe Bool,		-- If its a static object, is it breakable or not?
-	position :: Position,			-- Object position
-	controlType :: Maybe ObjectControlType,		-- If its a dynamic object, who controls it?
-	playerControl :: Maybe PlayerControlType,	-- If its a player object, which player controls it?
-	playerScore :: Maybe Integer,				-- If its a player object, what is his score?
-	items :: [Item],				-- List of items the object has or can drop
-	actions :: Maybe [Action],		-- For dynamic objects, what actions the object does
-	size :: Maybe ObjectSize		-- For player objects, what is the player size
-}
+data Player = Player { pos :: Point, controlledBy :: PlayerControlType, score :: Int, playerActions :: [Action], size :: PlayerSize }
+	deriving (Eq, Show)
 
 
 data Camera = Camera {
-	position :: Position,			-- Position of the camera in the world
-	cameraWidth :: Integer,			-- How wide (horizontal) the camera can see
-	cameraHeight :: Integer			-- How high (vertical) the camera can see
+	pos :: Point,				-- Position of the camera in the world
+	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
+	cameraHeight :: Int			-- How high (vertical) the camera can see
 }
 
 
 data GameState = GameState {
-	objects :: [Object],			-- All the objects in the game
-	camera :: Camera				-- A camera to view the world
+	blocks :: [Block],
+	floorBlocks :: [FloorBlock],
+	pipes :: [Pipe],
+	itemBlocks :: [ItemBlock],
+	player :: Player,
+	enemies :: [Enemy],
+	camera :: Camera
 }
+
+
+
+
+
+class Moveable a where
+	getPosition :: a -> Point
+	move :: a -> Action -> a
+
+
+instance Moveable Block where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable FloorBlock where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable Pipe where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable ItemBlock where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable Enemy where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable Object where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable Player where
+	getPosition = pos
+	-- TODO: move
+
+instance Moveable Camera where
+	getPosition = pos
+	-- TODO: move
+
+
+
+
+
+
+
+
+
+
