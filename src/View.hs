@@ -8,6 +8,14 @@ import Graphics.Gloss
 import Graphics.Gloss.Data.Bitmap
 
 
+floorBlockColor		= makeColorI 145 87 21 255
+pipeColor			= makeColorI 112 211 69 255
+itemBlockColor		= makeColorI 145 87 21 127
+blockColor			= makeColorI 234 216 14 255
+playerColor			= makeColorI 10 58 252 255
+enemyColor			= Color red
+
+
 view :: Picture -> GameState -> IO Picture -- GameState to be defined
 view pic = return . (viewPure pic)
 
@@ -26,10 +34,15 @@ viewPure pic gstate
 	where
 		showNothing			= infoToShow gstate == ShowNothing
 		cam					= cameraPos (camera gstate)
+		playerRect			= getRect $ player gstate
 		levelMap			= level gstate
+
 		blockRects			= map getRect (blocks levelMap)
 		floorBlockRects		= map getRect (floorBlocks levelMap)
 		itemBlockRects		= map getRect (itemBlocks levelMap)
 		pipeRects			= map getRect (pipes levelMap)
-		allRects 			= floorBlockRects ++ pipeRects ++ blockRects ++ itemBlockRects
-		playerRect			= getRect $ player gstate
+
+		allRects			= floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects
+
+
+
