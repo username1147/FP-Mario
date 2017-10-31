@@ -27,10 +27,10 @@ getCorners (Rectangle topLeftCorner bottomRightCorner) = [topLeftCorner,
 															bottomRightCorner,
 															bottomLeftCorner]
 	where
-		Point { x = left, y = top }			= topLeftCorner
-		Point { x = right, y = bottom }		= bottomRightCorner
-		topRightCorner 						= Point { x = right, y = top }
-		bottomLeftCorner					= Point { x = left, y = bottom }
+		Point left top		= topLeftCorner
+		Point right bottom	= bottomRightCorner
+		topRightCorner 		= Point { x = right, y = top }
+		bottomLeftCorner	= Point { x = left, y = bottom }
 
 
 
@@ -52,12 +52,12 @@ pointInsideRect point rectangle = insideHorizontal && insideVertical
 isCollision :: Rectangle -> Rectangle -> Bool
 isCollision rect1 rect2 = (x1 < x2 + w2) && (x1 + w1 > x2) && (y1 < y2 + h2) && (y1 + h1 > y2)
 	where
-		Point { x = x1, y = y1 }	= topLeft rect1
-		Point { x = x2, y = y2 }	= topLeft rect2
-		w1							= getWidth rect1
-		w2							= getWidth rect2
-		h1							= getHeight rect1
-		h2							= getHeight rect2
+		Point x1 y1		= topLeft rect1
+		Point x2 y2		= topLeft rect2
+		w1				= getWidth rect1
+		w2				= getWidth rect2
+		h1				= getHeight rect1
+		h2				= getHeight rect2
 
 
 
@@ -68,8 +68,8 @@ isCollision rect1 rect2 = (x1 < x2 + w2) && (x1 + w1 > x2) && (y1 < y2 + h2) && 
 handleCollision :: Object -> Object -> Collision
 handleCollision obj1 obj2 = Collision { normal = Point { x = 0, y = 0 }, penetrationDepth = 1.0, impulse = 2.0 }
 	where
-		Object { objectPos = p1, objectVelocity = v1 } = obj1
-		Object { objectPos = p2, objectVelocity = v2 } = obj2
+		Object p1 v1 = obj1
+		Object p2 v2 = obj2
 
 
 

@@ -1,5 +1,6 @@
-module Types where
+{-# LANGUAGE DuplicateRecordFields #-}
 
+module Types where
 
 
 data Direction = Left | Up | Right | Down
@@ -31,24 +32,24 @@ data Rectangle = Rectangle { topLeft :: Point, bottomRight :: Point}
 
 
 
-data Block = Block { blockPos :: Point, blockDestructable :: BlockDestructable, coin :: Maybe Coin }
+data Block = Block { pos :: Point, blockDestructable :: BlockDestructable, coin :: Maybe Coin }
 	deriving (Eq, Show)
 
-data FloorBlock = FloorBlock { floorBlockPos :: Point }
+data FloorBlock = FloorBlock { pos :: Point }
 	deriving (Eq, Show)
 
-data Pipe = Pipe { pipePos :: Point }
+data Pipe = Pipe { pos :: Point }
 	deriving (Eq, Show)
 
-data ItemBlock = ItemBlock { itemBockPos :: Point, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
+data ItemBlock = ItemBlock { pos :: Point, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
 	deriving (Eq, Show)
 
-data Enemy = Enemy { enemyPos :: Point, enemyActions :: [Action] }
+data Enemy = Enemy { pos :: Point, enemyActions :: [Action] }
 	deriving (Eq, Show)
 
 
 -- This object is used to handle collisions
-data Object = Object { objectPos :: Point, objectVelocity :: Point }
+data Object = Object { pos :: Point, objectVelocity :: Point }
 	deriving (Eq, Show)
 
 
@@ -60,12 +61,12 @@ data PlayerSize = Normal | Large
 	deriving (Eq, Show, Enum)
 
 
-data Player = Player { playerPos :: Point, controlledBy :: PlayerControlType, score :: Int, playerActions :: [Action], size :: PlayerSize }
+data Player = Player { pos :: Point, controlledBy :: PlayerControlType, score :: Int, playerActions :: [Action], size :: PlayerSize }
 	deriving (Eq, Show)
 
 
 data Camera = Camera {
-	cameraPos :: Point,			-- Position of the camera in the world
+	pos :: Point,				-- Position of the camera in the world
 	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Int			-- How high (vertical) the camera can see
 }
@@ -91,36 +92,37 @@ class Moveable a where
 
 
 instance Moveable Block where
-	getPosition = blockPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable FloorBlock where
-	getPosition = floorBlockPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable Pipe where
-	getPosition = pipePos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable ItemBlock where
-	getPosition = itemBockPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable Enemy where
-	getPosition = enemyPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable Object where
-	getPosition = objectPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable Player where
-	getPosition = playerPos
+	getPosition = pos
 	-- TODO: move
 
 instance Moveable Camera where
-	getPosition = cameraPos
+	getPosition = pos
 	-- TODO: move
+
 
 
 

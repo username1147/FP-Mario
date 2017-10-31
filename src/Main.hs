@@ -14,13 +14,18 @@ import Collision
 
 -- For testing, 2 rectangles...
 rect1 = Rectangle {
-	topLeft			= Point { x = 2.0, y = 7.0 },
-	bottomRight		= Point { x = 5.0, y = 3.0 }
+	topLeft			= Point { x = 2.0, y = 4.0 },
+	bottomRight		= Point { x = 5.0, y = 2.0 }
 }
 
 rect2 = Rectangle {
-	topLeft			= Point { x = 2.0, y = 7.0 },
-	bottomRight		= Point { x = 5.0, y = 3.0 }
+	topLeft			= Point { x = 6.0, y = 7.0 },
+	bottomRight		= Point { x = 9.0, y = 4.0 }
+}
+
+rect3 = Rectangle {
+	topLeft			= Point { x = 3.0, y = 3.0 },
+	bottomRight		= Point { x = 6.0, y = 1.0 }
 }
 
 
