@@ -1,4 +1,4 @@
-module Model where
+module Model where                
 
 import Graphics.Gloss.Data.Point
 -- new part
@@ -50,11 +50,12 @@ data InfoToShow = ShowNothing
 data GameState = GameState {
                     infoToShow :: InfoToShow,
                     cameraInfo :: CameraInfo,
+                    ifPaused :: Bool,
                     elapsedTime :: Float
                 }
 
 initialState :: GameState
-initialState = GameState (ShowSquare (200, 200)) (CameraInfo (0, 0) 400 400) 0
+initialState = GameState (ShowSquare (200, 200)) (CameraInfo (0, 0) 400 400) False 0
 
 nO_SECS_BETWEEN_CYCLES :: Float -- what is that for???
 nO_SECS_BETWEEN_CYCLES = 5

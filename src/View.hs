@@ -20,7 +20,12 @@ smallGreenSquare (n1, n2) = polygon [(n1, n2), (n1, n2 + 10), (n1 + 10, n2 + 10)
 viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate = case infoToShow gstate of -- different game states to be def.
     ShowNothing -> pic 
-    ShowSquare p -> Pictures [Color red (showRectObject cam rect1), 
+    ShowSquare p -> case ifPaused gstate of
+        True -> Pictures [Color red (showRectObject cam rect1), 
+                            Color red (showRectObject cam rect2),
+                            Color yellow (smallGreenSquare ((levelToScreenCoord . (absToRelCoord cam)) p))]
+                        where cam = cornerAbsPos (cameraInfo gstate)
+        False ->  Pictures [Color red (showRectObject cam rect1), 
                             Color red (showRectObject cam rect2),
                             Color green (smallGreenSquare ((levelToScreenCoord . (absToRelCoord cam)) p))]
                         where cam = cornerAbsPos (cameraInfo gstate)
