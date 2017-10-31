@@ -13,19 +13,19 @@ import Collision
 
 
 -- For testing, 2 rectangles...
-rect1 = Rectangle {
-	topLeft			= Point { x = 2.0, y = 4.0 },
-	bottomRight		= Point { x = 5.0, y = 2.0 }
+testRect1 = Rectangle {
+	topLeft			= (2.0, 4.0),
+	bottomRight		= (5.0, 2.0)
 }
 
-rect2 = Rectangle {
-	topLeft			= Point { x = 6.0, y = 7.0 },
-	bottomRight		= Point { x = 9.0, y = 4.0 }
+testRect2 = Rectangle {
+	topLeft			= (6.0, 7.0),
+	bottomRight		= (9.0, 4.0)
 }
 
-rect3 = Rectangle {
-	topLeft			= Point { x = 3.0, y = 3.0 },
-	bottomRight		= Point { x = 6.0, y = 1.0 }
+testRect3 = Rectangle {
+	topLeft			= (3.0, 3.0),
+	bottomRight		= (6.0, 1.0)
 }
 
 
@@ -36,6 +36,7 @@ main :: IO ()
 main = do
     picture <- loadBMP "src/MARBLES.bmp"
     print "File load"
+    print ("Rectangles collide: " ++ (show $ isCollision testRect1 testRect2))
     playIO (InWindow "Counter" (400, 400) (0, 0))
             black -- Background color
             2 -- Frames per second
