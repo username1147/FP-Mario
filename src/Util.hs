@@ -25,3 +25,13 @@ getCorners (Rectangle topLeftCorner bottomRightCorner) = [topLeftCorner,
 		(right, bottom)		= bottomRightCorner
 		topRightCorner 		= (right, top)
 		bottomLeftCorner	= (left, bottom)
+
+
+-- Adds the given point to the given rectangle, effectively shifting the rectangle
+shiftRectangle :: Rectangle -> Point -> Rectangle
+shiftRectangle (Rectangle topLeftCorner bottomRightCorner) point = newRectangle
+	where
+		newRectangle = Rectangle {
+			topLeft = topLeftCorner + point,
+			bottomRight = bottomRightCorner + point
+		}

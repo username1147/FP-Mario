@@ -13,8 +13,14 @@ data Rectangle = Rectangle { topLeft :: Point, bottomRight :: Point}
 -- General data types
 --------------------------------------------------------------------------------
 
-data Direction = Left | Up | Right | Down
-	deriving (Eq, Show, Enum)
+data Direction = DirLeft | DirUp | DirRight | DirDown
+	deriving (Eq, Enum)
+
+instance Show Direction where
+	show DirLeft	= "Left"
+	show DirUp		= "Up"
+	show DirRight	= "Right"
+	show DirDown	= "Down"
 
 data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actionStartTime :: Float }
 	deriving (Eq, Show)
@@ -79,7 +85,7 @@ data Player = Player {
 --------------------------------------------------------------------------------
 
 data Camera = Camera {
-	pos :: Point,				-- Position of the camera in the world
+	cameraPos :: Point,				-- Position of the camera in the world
 	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Int			-- How high (vertical) the camera can see
 } deriving (Eq, Show)
@@ -104,7 +110,8 @@ data GameState = GameState {
 	player :: Player,
 	enemies :: [Enemy],
 	camera :: Camera,
-	elapsedTime :: Float
+	elapsedTime :: Float,
+	paused :: Bool
 } deriving (Eq, Show)
 
 

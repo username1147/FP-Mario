@@ -46,8 +46,8 @@ initialState = GameState {
 	infoToShow = ShowGame,
 	player = Player {
 		playerRect = Rectangle {
-			topLeft         = (0.0,		10.0),
-			bottomRight     = (10.0,	0.0)
+			topLeft         = (195.0,	205.0),
+			bottomRight     = (205.0,	195.0)
 		},
 		controlledBy = Player1,
 		score = 0,
@@ -56,12 +56,13 @@ initialState = GameState {
 	},
 	enemies = [],
 	camera = Camera {
-		pos = (0, 0),
+		cameraPos = (0, 0),
 		cameraWidth = 400,
 		cameraHeight = 400
 	},
 	level = sampleLevel,
-	elapsedTime = 0.0
+	elapsedTime = 0.0,
+	paused = False
 }
 
 nO_SECS_BETWEEN_CYCLES :: Float -- what is that for???
