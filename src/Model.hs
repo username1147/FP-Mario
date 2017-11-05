@@ -3,7 +3,7 @@ module Model where
 import Graphics.Gloss.Data.Point
 
 import Types
-
+import Util
 
 absToRelCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
 absToRelCoord p1 p2 = p1 + p2
@@ -17,15 +17,15 @@ levelToScreenCoord (x, y) = (x - 200, y - 200) -- assuming screen is 400x400
 -- now create some blocks for a sample level
 block1 = FloorBlock {
 	floorBlockRect = Rectangle {
-		topLeft         = (0.0,		50.0),
-		bottomRight     = (500.0,	0.0)
+		bottomLeft      = (0.0,     0.0),
+		topRight        = (500.0,   50.0)
 	}
 }
 
 block2 = Block {
 	blockRect = Rectangle {
-		topLeft         = (300,		400),
-		bottomRight     = (800,		350)
+		bottomLeft      = (300,		350),
+		topRight        = (800,		400)
 	},
 	blockDestructable = Destructable,
 	coin = Just (Coin 100)
@@ -46,12 +46,12 @@ initialState = GameState {
 	infoToShow = ShowGame,
 	player = Player {
 		playerRect = Rectangle {
-			topLeft         = (195.0,	205.0),
-			bottomRight     = (205.0,	195.0)
+			bottomLeft         = (195.0,	195.0),
+			topRight     = (205.0,	205.0)
 		},
 		controlledBy = Player1,
 		score = 0,
-		playerActions = [],
+		playerActions = Action (0, 0) 0 0 0,
 		size = Normal
 	},
 	enemies = [],

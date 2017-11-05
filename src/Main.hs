@@ -14,18 +14,21 @@ import Collision
 
 -- For testing, 2 rectangles...
 testRect1 = Rectangle {
-	topLeft			= (2.0, 4.0),
-	bottomRight		= (5.0, 2.0)
+    bottomLeft      = (2.0, 2.0),
+    topRight        = (5.0, 4.0)
 }
 
 testRect2 = Rectangle {
-	topLeft			= (6.0, 7.0),
-	bottomRight		= (9.0, 4.0)
+    bottomLeft      = (6.0, 4.0),
+    topRight        = (9.0, 7.0)
 }
 
 testRect3 = Rectangle {
 	topLeft			= (3.0, 3.0),
 	bottomRight		= (6.0, 1.0)
+
+    bottomLeft      = (3.0, 1.0),
+    topRight        = (6.0, 3.0)
 }
 
 

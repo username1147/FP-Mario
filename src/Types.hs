@@ -3,11 +3,7 @@
 module Types where
 
 import Graphics.Gloss.Data.Point
-
-
-data Rectangle = Rectangle { topLeft :: Point, bottomRight :: Point}
-	deriving (Eq, Show)
-
+import Util -- for the function shiftRectangle
 
 --------------------------------------------------------------------------------
 -- General data types
@@ -22,9 +18,13 @@ instance Show Direction where
 	show DirRight	= "Right"
 	show DirDown	= "Down"
 
-data Action = Action { moveDirection :: Direction, movementSpeed :: Float, actionStartTime :: Float }
+-- data Actions = Actions { leftRight :: Maybe Action, upDown :: Maybe Action }
+
+data Action = Action { directionVector :: Point, verticalMovementSpeed :: Float, horizontalMovementSpeed :: Float, actionStartTime :: Float }
 	deriving (Eq, Show)
 
+actionMovementVector :: Action -> Point -- translates the action data into a clear shifting vector
+actionMovementVector (Action (x, y) v h t) = (x * h, y * v)
 
 data Coin = Coin Int
 	deriving (Eq, Show)
@@ -58,7 +58,7 @@ data ItemBlock = ItemBlock { itemBlockRect :: Rectangle, itemBlockDestructable :
 -- Data types with regards to enemies and players
 --------------------------------------------------------------------------------
 
-data Enemy = Enemy { enemyRect :: Rectangle, enemyActions :: [Action] }
+data Enemy = Enemy { enemyRect :: Rectangle, enemyActions :: Action }
 	deriving (Eq, Show)
 
 
@@ -74,7 +74,7 @@ data Player = Player {
 	playerRect :: Rectangle,
 	controlledBy :: PlayerControlType,
 	score :: Int,
-	playerActions :: [Action],
+	playerActions :: Action,
 	size :: PlayerSize
 } deriving (Eq, Show)
 
@@ -145,7 +145,7 @@ instance Rectangleable Player where
 -- Class and instances for objects that can perform actions
 --------------------------------------------------------------------------------
 class Actionable a where
-	getActions :: a -> [Action]
+	getActions :: a -> Action
 
 
 instance Actionable Enemy where
@@ -166,11 +166,32 @@ class Moveable a where
 
 
 instance Moveable Block where
-	-- getPosition = topLeft $ rect
-	-- TODO: move
+	getPosition b = bottomLeft $ (blockRect b)
+	move b act = b -- blocks are not supposed to move
 
+instance Moveable FloorBlock where
+    getPosition f = bottomLeft $ (floorBlockRect f)
+    move f act = f -- floor blocks don't move
 
+instance Moveable Pipe where
+    getPosition p = bottomLeft $ (pipeRect p)
+    move p act = p -- pipes don't move
 
+instance Moveable ItemBlock where
+    getPosition i = bottomLeft $ (itemBlockRect i)
+    move i act = i
+
+instance Moveable Enemy where
+    getPosition e = bottomLeft $ (enemyRect e)
+    
+    move en act = en { -- move function
+            enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
+            enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
+        } 
+   
+instance Moveable Player where
+    getPosition = undefined
+    move = undefined
 
 
 
