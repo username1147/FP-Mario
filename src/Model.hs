@@ -3,7 +3,7 @@ module Model where
 import Graphics.Gloss.Data.Point
 
 import Types
-import Util
+import Rectangle
 
 absToRelCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
 absToRelCoord p1 p2 = p1 + p2

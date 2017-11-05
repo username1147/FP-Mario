@@ -5,7 +5,7 @@ module Controller where
 import Graphics.Gloss.Interface.IO.Game
 import Types
 import Model
-import Util
+import Rectangle
 
 -- supplementary function for inputKey
 shiftCameraWithMario :: Float -> Float -> Camera -> Camera

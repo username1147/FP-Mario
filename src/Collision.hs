@@ -2,7 +2,7 @@ module Collision where
 
 import Graphics.Gloss.Data.Point
 import Types
-import Util
+import Rectangle
 
 
 -- This data type will be used to represent a collision. The penetration depth

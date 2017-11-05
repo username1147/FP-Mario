@@ -2,7 +2,7 @@ module View where
 
 import Model
 import Types
-import Util
+import Rectangle
 
 import Graphics.Gloss
 import Graphics.Gloss.Data.Bitmap

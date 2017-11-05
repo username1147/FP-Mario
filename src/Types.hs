@@ -3,7 +3,7 @@
 module Types where
 
 import Graphics.Gloss.Data.Point
-import Util -- for the function shiftRectangle
+import Rectangle -- for the function shiftRectangle
 
 --------------------------------------------------------------------------------
 -- General data types
@@ -189,10 +189,12 @@ instance Moveable Enemy where
             enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
         } 
 
-
 instance Moveable Player where
-	getPosition = undefined
-	move = undefined
+	getPosition pl = bottomLeft $ playerRect pl
+	move pl act = pl {
+            playerRect = shiftRectangle (getRect pl) (actionMovementVector act),
+            playerActions = Action (0, 0) 0 0 (actionStartTime act)
+        }
 
 
 

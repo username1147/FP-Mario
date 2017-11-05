@@ -9,7 +9,7 @@ import Controller
 import Model
 import View
 import Types
-import Util
+import Rectangle
 import Collision
 
 

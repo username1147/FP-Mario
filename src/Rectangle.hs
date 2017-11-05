@@ -1,4 +1,4 @@
-module Util where
+module Rectangle where
 
 import Graphics.Gloss.Data.Point
 
