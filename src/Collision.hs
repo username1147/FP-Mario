@@ -14,7 +14,6 @@ data Collision = Collision { normal :: Point, penetrationDepth :: Double, impuls
 
 
 
-
 -- Returns True/False if the given point lies inside the rectangle. If the point
 -- lies exactly on a corner or edge, it is not considered "inside"
 {-
@@ -48,15 +47,19 @@ isCollision rect1 rect2 = (x1 < x2 + w2) && (x1 + w1 > x2) && (y1 < y2 + h2) && 
 		h1				= getHeight rect1
 		h2				= getHeight rect2
 -}
-isCollision rect1 rect2 
+
+isCollision rect1 rect2 -- says True if there is no collision 
     =   (not $ pointInsideRect p1 rect2)
     &&  (not $ pointInsideRect p2 rect2)
     &&  (not $ pointInsideRect p3 rect2)
     &&  (not $ pointInsideRect p4 rect2)
+    &&  (not $ pointInsideRect p5 rect1) -- to eliminate the case when rect2 contains rect1
+    &&  (not $ (rect1 == rect2)) -- to eliminate the case when rect1 = rect2 
     where   p1@(xB, yB) = bottomLeft rect1 -- xB = xBottom
             p2@(xT, yT)  = topRight rect1
             p3 = (xT, yB)
             p4 = (xB, yT)
+            p5 = bottomLeft rect2
 -- Returns a Point object that resembles the displacement that needs to be applied
 -- to the first rectangle to make sure that the two rectangles no longer collide
 -- NOTE: This function assumes the two rectangles actually collide, as well as

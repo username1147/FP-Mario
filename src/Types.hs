@@ -166,23 +166,23 @@ class Moveable a where
 
 
 instance Moveable Block where
-	getPosition b = bottomLeft $ (blockRect b)
-	move b act = b -- blocks are not supposed to move
+	getPosition b = bottomLeft $ blockRect b
+	move b _ = b -- blocks are not supposed to move
 
 instance Moveable FloorBlock where
-    getPosition f = bottomLeft $ (floorBlockRect f)
-    move f act = f -- floor blocks don't move
+    getPosition f = bottomLeft $ floorBlockRect f
+    move f _ = f -- floor blocks don't move
 
 instance Moveable Pipe where
-    getPosition p = bottomLeft $ (pipeRect p)
-    move p act = p -- pipes don't move
+    getPosition p = bottomLeft $ pipeRect p
+    move p _ = p -- pipes don't move
 
 instance Moveable ItemBlock where
-    getPosition i = bottomLeft $ (itemBlockRect i)
-    move i act = i
+    getPosition i = bottomLeft $ itemBlockRect i
+    move i _ = i
 
 instance Moveable Enemy where
-    getPosition e = bottomLeft $ (enemyRect e)
+    getPosition e = bottomLeft $ enemyRect e
     
     move en act = en { -- move function
             enemyRect = shiftRectangle (getRect en) (actionMovementVector act),

@@ -10,6 +10,7 @@ import Model
 import View
 import Types
 import Collision
+import Util
 
 
 -- For testing, 2 rectangles...
@@ -24,9 +25,6 @@ testRect2 = Rectangle {
 }
 
 testRect3 = Rectangle {
-	topLeft			= (3.0, 3.0),
-	bottomRight		= (6.0, 1.0)
-
     bottomLeft      = (3.0, 1.0),
     topRight        = (6.0, 3.0)
 }
