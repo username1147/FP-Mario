@@ -170,28 +170,28 @@ instance Moveable Block where
 	move b act = b -- blocks are not supposed to move
 
 instance Moveable FloorBlock where
-    getPosition f = bottomLeft $ (floorBlockRect f)
-    move f act = f -- floor blocks don't move
+	getPosition f = bottomLeft $ (floorBlockRect f)
+	move f act = f -- floor blocks don't move
 
 instance Moveable Pipe where
-    getPosition p = bottomLeft $ (pipeRect p)
-    move p act = p -- pipes don't move
+	getPosition p = bottomLeft $ (pipeRect p)
+	move p act = p -- pipes don't move
 
 instance Moveable ItemBlock where
-    getPosition i = bottomLeft $ (itemBlockRect i)
-    move i act = i
+	getPosition i = bottomLeft $ (itemBlockRect i)
+	move i act = i
 
 instance Moveable Enemy where
-    getPosition e = bottomLeft $ (enemyRect e)
-    
-    move en act = en { -- move function
-            enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
-            enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
-        } 
-   
+	getPosition e = bottomLeft $ (enemyRect e)
+
+	move en act = en { -- move function
+			enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
+			enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
+		}
+
 instance Moveable Player where
-    getPosition = undefined
-    move = undefined
+	getPosition = undefined
+	move = undefined
 
 
 

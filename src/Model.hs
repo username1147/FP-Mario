@@ -17,15 +17,15 @@ levelToScreenCoord (x, y) = (x - 200, y - 200) -- assuming screen is 400x400
 -- now create some blocks for a sample level
 block1 = FloorBlock {
 	floorBlockRect = Rectangle {
-		bottomLeft      = (0.0,     0.0),
-		topRight        = (500.0,   50.0)
+		bottomLeft	= (0.0,		0.0),
+		topRight	= (500.0,	50.0)
 	}
 }
 
 block2 = Block {
 	blockRect = Rectangle {
-		bottomLeft      = (300,		350),
-		topRight        = (800,		400)
+		bottomLeft	= (300,	350),
+		topRight	= (800,	400)
 	},
 	blockDestructable = Destructable,
 	coin = Just (Coin 100)
@@ -46,8 +46,8 @@ initialState = GameState {
 	infoToShow = ShowGame,
 	player = Player {
 		playerRect = Rectangle {
-			bottomLeft         = (195.0,	195.0),
-			topRight     = (205.0,	205.0)
+			bottomLeft	= (195.0, 195.0),
+			topRight	= (205.0, 205.0)
 		},
 		controlledBy = Player1,
 		score = 0,
