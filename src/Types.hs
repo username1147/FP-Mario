@@ -188,10 +188,11 @@ instance Moveable Enemy where
             enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
             enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
         } 
-   
+
+
 instance Moveable Player where
-    getPosition = undefined
-    move = undefined
+	getPosition = undefined
+	move = undefined
 
 
 

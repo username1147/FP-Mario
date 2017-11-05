@@ -27,11 +27,10 @@ pointInsideRect (xCoord, yCoord) rectangle = insideHorizontal && insideVertical
 		insideVertical					= yBottomRight	< yCoord && yCoord < yTopLeft
 -}
 pointInsideRect p@(x0, y0) (Rectangle (x1, y1) (x2, y2))
-    =  x0 > min x1 x2
-    && x0 < max x1 x2
-    && y0 > min y1 y2
-    && y0 < max y1 y2
-    
+	= x0 > min x1 x2
+	&& x0 < max x1 x2
+	&& y0 > min y1 y2
+	&& y0 < max y1 y2
 
 -- Returns True/False if 2 Rectangles are intersecting each other (aka, colliding).
 -- If 2 Rectangles have corners or edges exactly on top of each other, it is not
@@ -60,6 +59,8 @@ isCollision rect1 rect2 -- says True if there is no collision
             p3 = (xT, yB)
             p4 = (xB, yT)
             p5 = bottomLeft rect2
+
+
 -- Returns a Point object that resembles the displacement that needs to be applied
 -- to the first rectangle to make sure that the two rectangles no longer collide
 -- NOTE: This function assumes the two rectangles actually collide, as well as

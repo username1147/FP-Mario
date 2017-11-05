@@ -6,7 +6,7 @@ import Graphics.Gloss.Data.Point
 -- Rectangle manipulations
 --------------------------
 data Rectangle = Rectangle { bottomLeft :: Point, topRight :: Point }
-    deriving (Eq, Show)
+	deriving (Eq, Show)
 
 
 getWidth :: Rectangle -> Float
@@ -19,10 +19,9 @@ getHeight (Rectangle (_, yBottomLeft) (_, yTopRight)) = yTopRight - yBottomLeft
 -- topRight, bottomRight order
 getCorners :: Rectangle -> [Point]
 getCorners (Rectangle bottomLeftCorner topRightCorner) = [bottomLeftCorner,
-                                                            topLeftCorner,
-                                                            topRightCorner,
-                                                            bottomRightCorner
-                                                       ]
+															topLeftCorner,
+															topRightCorner,
+															bottomRightCorner]
 	where
 		(left, bottom)		= bottomLeftCorner
 		(right, top)		= topRightCorner
