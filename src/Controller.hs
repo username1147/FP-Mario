@@ -209,8 +209,15 @@ step frameTime gstate = return $ newGameState
 		playerObject	= player gstate
 		playerShift		= actionMovementVector (playerActions playerObject) frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
+
+		-- Update camera position
+		cameraObject	= camera gstate
+		newCameraPos	= getCenter newPlayerRect - (200, 200)	-- Screen resolution...
+
+		-- Update new game state
 		newGameState	= gstate {
 							lastFrameTime	= frameTime,
 							elapsedTime		= elapsedTime gstate + frameTime,
-							player 			= playerObject { playerRect = newPlayerRect }
+							player 			= playerObject { playerRect = newPlayerRect },
+							camera			= cameraObject { cameraPos = newCameraPos }
 						}

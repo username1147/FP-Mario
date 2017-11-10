@@ -15,6 +15,7 @@ getWidth (Rectangle (xBottomLeft, _) (xTopRight, _)) = xTopRight - xBottomLeft
 getHeight :: Rectangle -> Float
 getHeight (Rectangle (_, yBottomLeft) (_, yTopRight)) = yTopRight - yBottomLeft
 
+
 topLeft :: Rectangle -> Point
 topLeft (Rectangle (xBottomLeft, _) (_, yTopRight)) = (xBottomLeft, yTopRight)
 
@@ -25,6 +26,15 @@ bottomRight (Rectangle (_, yBottomLeft) (xTopRight, _)) = (xTopRight, yBottomLef
 -- topRight, bottomRight order
 getCorners :: Rectangle -> [Point]
 getCorners rect = [bottomLeft rect, topLeft rect, topRight rect, bottomRight rect]
+
+-- Returns the center of the given rectangle
+getCenter :: Rectangle -> Point
+getCenter (Rectangle bottomLeft topRight) = (centerX, centerY)
+	where
+		(x1, y1)	= bottomLeft
+		(x2, y2)	= topRight
+		centerX		= (x1 + x2) * 0.5
+		centerY		= (y1 + y2) * 0.5
 
 
 -- Adds the given point to the given rectangle, effectively shifting the rectangle

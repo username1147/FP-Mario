@@ -1,4 +1,3 @@
-
 module Actions where
 
 import Graphics.Gloss.Data.Point
@@ -6,8 +5,7 @@ import Graphics.Gloss.Data.Point
 data Action = Action { directionVector :: Point, verticalMovementSpeed :: Float, horizontalMovementSpeed :: Float, actionStartTime :: Float }
 	deriving (Eq, Show)
 
--- Returns a movement vector from the given action, the
--- TODO: Add gravity...?
+-- Returns a movement/displacement vector from the given action, given a certain deltaTime
 actionMovementVector :: Action -> Float -> Point
 actionMovementVector (Action (x, y) v h actionTime) deltaTime = (x * h * deltaTime, y * v * deltaTime)
 
@@ -31,7 +29,7 @@ reverseAction (Action dirVec vertSpeed horSpeed actTime) = Action {
 }
 
 
--- TODO: Combine 2 actions into 1
+-- Combine 2 actions into 1, by adding individual fields
 addActions :: Action -> Action -> Action
 addActions action1 action2 = Action {
 	directionVector			= dirVec1 + dirVec2,
@@ -47,16 +45,3 @@ addActions action1 action2 = Action {
 		horSpeed2	= horizontalMovementSpeed action2
 		actTime1	= actionStartTime action1
 		actTime2	= actionStartTime action2
-
-
-
-
--- TODO: Finish this or rewrite it, whatever
--- applyActions :: Moveable a => Actionable a => Rectangleable a => a -> a
--- applyActions object
--- 	| isJust leftRight	=
--- 	where
--- 		objectRect	= getRect object
--- 		actions		= getActions object
--- 		leftRight	= leftOrRight actions
--- 		upDown		= upOrDown actions
