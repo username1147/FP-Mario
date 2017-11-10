@@ -4,6 +4,8 @@ module Types where
 
 import Graphics.Gloss.Data.Point
 import Rectangle -- for the function shiftRectangle
+import Actions
+
 
 --------------------------------------------------------------------------------
 -- General data types
@@ -18,13 +20,6 @@ instance Show Direction where
 	show DirRight	= "Right"
 	show DirDown	= "Down"
 
--- data Actions = Actions { leftRight :: Maybe Action, upDown :: Maybe Action }
-
-data Action = Action { directionVector :: Point, verticalMovementSpeed :: Float, horizontalMovementSpeed :: Float, actionStartTime :: Float }
-	deriving (Eq, Show)
-
-actionMovementVector :: Action -> Point -- translates the action data into a clear shifting vector
-actionMovementVector (Action (x, y) v h t) = (x * h, y * v)
 
 data Coin = Coin Int
 	deriving (Eq, Show)
@@ -110,6 +105,7 @@ data GameState = GameState {
 	player :: Player,
 	enemies :: [Enemy],
 	camera :: Camera,
+	lastFrameTime :: Float,
 	elapsedTime :: Float,
 	paused :: Bool
 } deriving (Eq, Show)
@@ -181,20 +177,20 @@ instance Moveable ItemBlock where
     getPosition i = bottomLeft $ itemBlockRect i
     move i _ = i
 
-instance Moveable Enemy where
-    getPosition e = bottomLeft $ enemyRect e
-    
-    move en act = en { -- move function
-            enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
-            enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
-        } 
+-- instance Moveable Enemy where
+--     getPosition e = bottomLeft $ enemyRect e
 
-instance Moveable Player where
-	getPosition pl = bottomLeft $ playerRect pl
-	move pl act = pl {
-            playerRect = shiftRectangle (getRect pl) (actionMovementVector act),
-            playerActions = Action (0, 0) 0 0 (actionStartTime act)
-        }
+--     move en act = en { -- move function
+--             enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
+--             enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
+--         }
+
+-- instance Moveable Player where
+-- 	getPosition pl = bottomLeft $ playerRect pl
+-- 	move pl act = pl {
+--             playerRect = shiftRectangle (getRect pl) (actionMovementVector act),
+--             playerActions = Action (0, 0) 0 0 (actionStartTime act)
+--         }
 
 
 

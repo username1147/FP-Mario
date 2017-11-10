@@ -40,11 +40,10 @@ main :: IO ()
 main = do
 	picture <- loadBMP "src/MARBLES.bmp"
 	print "File load"
-	print ("Rectangles collide v1: " ++ (show $ isCollision testRect1 testRect2))
-	print ("Rectangles collide v2: " ++ (show $ isCollision2 testRect1 testRect2))
+	print ("Rectangles collide: " ++ (show $ isCollision testRect1 testRect2))
 	playIO (InWindow "Counter" (400, 400) (0, 0))
 			black -- Background color
-			2 -- Frames per second
+			60 -- Frames per second
 			initialState -- in Model
 			(view picture) -- in View
 			input -- in Controller

@@ -28,9 +28,9 @@ viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate
 	| showNothing 	= pic
 	| paused gstate	= Pictures ((map (Color red) (map (displayRectangle cam) allRects)) ++
-						[Color yellow (displayRectangle cam playerRect)])
+						[Color yellow (displayRectangle cam playerRect), frameTimePicture])
 	| otherwise		= Pictures ((map (Color red) (map (displayRectangle cam) allRects)) ++
-						[Color green (displayRectangle cam playerRect)])
+						[Color green (displayRectangle cam playerRect), frameTimePicture])
 	where
 		showNothing			= infoToShow gstate == ShowNothing
 		cam					= cameraPos (camera gstate)
@@ -41,6 +41,11 @@ viewPure pic gstate
 		floorBlockRects		= map getRect (floorBlocks levelMap)
 		itemBlockRects		= map getRect (itemBlocks levelMap)
 		pipeRects			= map getRect (pipes levelMap)
+
+		textPicture			= color green (text (show (1.0 / (lastFrameTime gstate))))
+		scaledTextPicture	= scale 0.2 0.2 textPicture
+		frameTimePicture	= translate (-190.0) (170.0) scaledTextPicture
+
 
 		allRects			= floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects
 

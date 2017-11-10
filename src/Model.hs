@@ -3,6 +3,7 @@ module Model where
 import Graphics.Gloss.Data.Point
 
 import Types
+import Actions
 import Rectangle
 
 absToRelCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
@@ -51,7 +52,7 @@ initialState = GameState {
 		},
 		controlledBy = Player1,
 		score = 0,
-		playerActions = Action (0, 0) 0 0 0,
+		playerActions = defaultAction,
 		size = Normal
 	},
 	enemies = [],
@@ -61,6 +62,7 @@ initialState = GameState {
 		cameraHeight = 400
 	},
 	level = sampleLevel,
+	lastFrameTime = -1.0,
 	elapsedTime = 0.0,
 	paused = False
 }
