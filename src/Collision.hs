@@ -30,14 +30,13 @@ pointInsideRect (x, y) (Rectangle bottomLeft topRight) = insideHorizontal && ins
 -- considered a collision for those corners/edges.
 
 isCollision :: Rectangle -> Rectangle -> Bool
-isCollision rect1 rect2 = (x1 < x2 + w2) && (x1 + w1 > x2) && (y1 < y2 + h2) && (y1 + h1 > y2)
+isCollision rectA rectB =
+	not (xLeftA > xRightB || xRightA < xLeftB || yTopA < yBottomB || yBottomA > yTopB)
 	where
-		(x1, y1)		= topLeft rect1
-		(x2, y2)		= topLeft rect2
-		w1				= getWidth rect1
-		w2				= getWidth rect2
-		h1				= getHeight rect1
-		h2				= getHeight rect2
+		(xLeftA, yBottomA) = bottomLeft rectA
+		(xRightA, yTopA) = topRight rectA
+		(xLeftB, yBottomB) = bottomLeft rectB
+		(xRightB, yTopB) = topRight rectB
 
 
 -- Returns a Point object that resembles the displacement that needs to be applied

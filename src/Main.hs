@@ -13,7 +13,7 @@ import Rectangle
 import Collision
 
 
--- For testing, 2 rectangles...
+-- For testing, 3 rectangles...
 testRect1 :: Rectangle
 testRect1 = Rectangle {
 	bottomLeft	= (2.0, 2.0),
@@ -40,7 +40,12 @@ main :: IO ()
 main = do
 	picture <- loadBMP "src/MARBLES.bmp"
 	print "File load"
-	print ("Rectangles collide: " ++ (show $ isCollision testRect1 testRect2))
+	print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
+	print ("Rectangles 2 and 1 collide: " ++ (show $ isCollision testRect2 testRect1))
+	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
+	print ("Rectangles 3 and 2 collide: " ++ (show $ isCollision testRect3 testRect2))
+	print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
+	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
 	playIO (InWindow "Counter" (400, 400) (0, 0))
 			black -- Background color
 			60 -- Frames per second

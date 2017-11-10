@@ -66,6 +66,3 @@ initialState = GameState {
 	elapsedTime = 0.0,
 	paused = False
 }
-
-nO_SECS_BETWEEN_CYCLES :: Float -- what is that for???
-nO_SECS_BETWEEN_CYCLES = 5
