@@ -80,7 +80,7 @@ data Player = Player {
 --------------------------------------------------------------------------------
 
 data Camera = Camera {
-	cameraPos :: Point,				-- Position of the camera in the world
+	cameraPos :: Point,			-- Position of the camera in the world
 	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Int			-- How high (vertical) the camera can see
 } deriving (Eq, Show)

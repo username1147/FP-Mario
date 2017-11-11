@@ -14,34 +14,32 @@ import Rectangle
 --------------------------------------------------------------------------------
 moveLeft :: Float -> Action
 moveLeft currentTime = Action {
-	directionVector			= (-1.0, 0.0),
-	verticalMovementSpeed	= 0.0,
-	horizontalMovementSpeed	= 50.0,
-	actionStartTime			= currentTime
+	moveVector		= (-50.0, 0.0),
+	actionStartTime	= currentTime
 }
 
 moveRight :: Float -> Action
 moveRight currentTime = Action {
-	directionVector			= (1.0, 0.0),
-	verticalMovementSpeed	= 0.0,
-	horizontalMovementSpeed	= 50.0,
-	actionStartTime			= currentTime
+	moveVector		= (50.0, 0.0),
+	actionStartTime	= currentTime
 }
 
 moveUp :: Float -> Action
 moveUp currentTime = Action {
-	directionVector			= (0.0, 1.0),
-	verticalMovementSpeed	= 50.0,
-	horizontalMovementSpeed	= 0.0,
-	actionStartTime			= currentTime
+	moveVector		= (0.0, 50.0),
+	actionStartTime	= currentTime
 }
 
 moveDown :: Float -> Action
 moveDown currentTime = Action {
-	directionVector			= (0.0, -1.0),
-	verticalMovementSpeed	= 50.0,
-	horizontalMovementSpeed	= 0.0,
-	actionStartTime			= currentTime
+	moveVector		= (0.0, -50.0),
+	actionStartTime	= currentTime
+}
+
+gravity :: Float -> Action
+gravity currentTime = Action {
+	moveVector		= (0.0, -9.81),
+	actionStartTime	= currentTime
 }
 
 
@@ -205,9 +203,10 @@ input e gstate = return (inputKey e gstate)
 step :: Float -> GameState -> IO GameState
 step frameTime gstate = return $ newGameState
 	where
-		-- Update player positions
+		-- Update player positions, also add gravity
 		playerObject	= player gstate
-		playerShift		= actionMovementVector (playerActions playerObject) frameTime
+		playerAction	= addActions (gravity frameTime) (playerActions playerObject)
+		playerShift		= actionMovementVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
 		-- Update camera position
