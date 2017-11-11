@@ -33,16 +33,6 @@ convertToFloatTuple (x, y) = (convertToFloat x, convertToFloat y)
 -- General data types
 --------------------------------------------------------------------------------
 
-data Direction = DirLeft | DirUp | DirRight | DirDown
-	deriving (Eq, Enum)
-
-instance Show Direction where
-	show DirLeft	= "Left"
-	show DirUp		= "Up"
-	show DirRight	= "Right"
-	show DirDown	= "Down"
-
-
 data Coin = Coin Int
 	deriving (Eq, Show)
 

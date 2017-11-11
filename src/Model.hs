@@ -55,6 +55,8 @@ initialState windowResolution@(resolutionWidth, resolutionHeight) = GameState {
 	elapsedTime = 0.0,
 	paused = False }
 	where
+		-- The player starting rect is defined here so we can focus the camera
+		-- on it when we start the level
 		playerStartRect			= Rectangle {
 									bottomLeft	= (30.0, 100.0),
 									topRight	= (40.0, 110.0)

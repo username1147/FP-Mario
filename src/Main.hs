@@ -49,9 +49,6 @@ main :: IO ()
 main = do
 	picture <- loadBMP "src/MARBLES.bmp"
 	print "File load"
-	print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
-	print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
-	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
 	playIO (InWindow "Counter" screenResolution screenOffset)
 			black -- Background color
 			framesPerSecond -- Frames per second
