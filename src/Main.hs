@@ -35,21 +35,27 @@ testRect3 = Rectangle {
 
 -- main = putStrLn ("Hello, Haskell! Rectangles collide: " ++ (show $ isCollision rect1 rect2))
 
+-- Configuration of the game
+screenResolution :: (Int, Int)
+screenResolution = (400, 400)
+
+screenOffset :: (Int, Int)
+screenOffset = (0, 0)
+
+framesPerSecond :: Int
+framesPerSecond = 60
 
 main :: IO ()
 main = do
 	picture <- loadBMP "src/MARBLES.bmp"
 	print "File load"
 	print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
-	print ("Rectangles 2 and 1 collide: " ++ (show $ isCollision testRect2 testRect1))
-	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
-	print ("Rectangles 3 and 2 collide: " ++ (show $ isCollision testRect3 testRect2))
 	print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
-	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
-	playIO (InWindow "Counter" (400, 400) (0, 0))
+	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
+	playIO (InWindow "Counter" screenResolution screenOffset)
 			black -- Background color
-			60 -- Frames per second
-			initialState -- in Model
+			framesPerSecond -- Frames per second
+			(initialState screenResolution) -- in Model
 			(view picture) -- in View
 			input -- in Controller
 			step -- in Controller

@@ -6,6 +6,28 @@ import Graphics.Gloss.Data.Point
 import Rectangle -- for the function shiftRectangle
 import Actions
 
+--------------------------------------------------------------------------------
+-- Data types for game code
+--------------------------------------------------------------------------------
+
+-- Screen resolution type alias
+type Resolution = (Int, Int)
+
+convertToInt :: Float -> Int
+convertToInt x = truncate x
+
+convertToFloat :: Int -> Float
+convertToFloat x = fromIntegral x
+
+multiplyTuple :: Num a => (a, a) -> a -> (a, a)
+multiplyTuple (x, y) scale = (x * scale, y * scale)
+
+convertToIntTuple :: (Float, Float) -> (Int, Int)
+convertToIntTuple (x, y) = (convertToInt x, convertToInt y)
+
+convertToFloatTuple :: (Int, Int) -> (Float, Float)
+convertToFloatTuple (x, y) = (convertToFloat x, convertToFloat y)
+
 
 --------------------------------------------------------------------------------
 -- General data types
@@ -105,6 +127,8 @@ data GameState = GameState {
 	player :: Player,
 	enemies :: [Enemy],
 	camera :: Camera,
+	resolution :: Resolution,
+	resolutionHalf :: Resolution,
 	lastFrameTime :: Float,
 	elapsedTime :: Float,
 	paused :: Bool

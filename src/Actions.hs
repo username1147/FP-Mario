@@ -5,9 +5,10 @@ import Graphics.Gloss.Data.Point
 data Action = Action { moveVector :: Point, actionStartTime :: Float }
 	deriving (Eq, Show)
 
--- Returns a movement/displacement vector from the given action, given a certain deltaTime
-actionMovementVector :: Action -> Float -> Point
-actionMovementVector (Action (vx, vy) actionTime) deltaTime = (vx * deltaTime, vy * deltaTime)
+
+-- Returns a displacement vector from the given action, given a certain deltaTime
+deltaPositionVector :: Action -> Float -> Point
+deltaPositionVector (Action (vx, vy) actionTime) deltaTime = (vx * deltaTime, vy * deltaTime)
 
 
 -- Returns a default Action that does nothing
@@ -16,6 +17,7 @@ defaultAction = Action {
 	moveVector		= (0.0, 0.0),
 	actionStartTime	= 0.0
 }
+
 
 -- Returns the "opposite"/reverse action
 reverseAction :: Action -> Action
