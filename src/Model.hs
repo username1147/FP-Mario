@@ -52,8 +52,8 @@ initialState windowResolution@(resolutionWidth, resolutionHeight) = GameState {
 	},
 	enemies = [
 		Enemy {
-			enemyRect = Rectangle (500, 50) (550, 100),
-			deathRect = Rectangle (500, 50) (550, 90),
+			enemyRect = Rectangle (400, 150) (450, 200),
+			deathRect = Rectangle (400, 150) (450, 190),
 			enemyActions = Action (-50.0, 0.0) 0.0,
 			enemyGravity = defaultGravityAction
 		}

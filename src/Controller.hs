@@ -267,9 +267,9 @@ step frameTime gstate
 		enemyObjects	= enemies gstate
 		enemyActionList	= map enemyActions enemyObjects
 		enemyShifts		= [deltaPositionVector enemyAction frameTime | enemyAction <- enemyActionList]
-		enemyZipped		= zip enemyObjects enemyShifts
-		newEnemyRects	= [shiftRectangle (enemyRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemyZipped]
-		newDeathRects	= [shiftRectangle (deathRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemyZipped]
+		enemiesZipped	= zip enemyObjects enemyShifts
+		newEnemyRects	= [shiftRectangle (enemyRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemiesZipped]
+		newDeathRects	= [shiftRectangle (deathRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemiesZipped]
 		newEnemyObjects	= [enemyObject { enemyRect = newEnemyRect, deathRect = newDeathRect } | (enemyObject, newEnemyRect, newDeathRect) <- zip3 enemyObjects newEnemyRects newDeathRects]
 
 		-- Check for collisions and handle them
@@ -287,14 +287,26 @@ step frameTime gstate
 		newPlayerRect2			= playerRect $ playerObject2
 		newPlayerRectGravity	= shiftRectangle newPlayerRect2 playerShiftGravity
 
-		-- TODO: Add gravity to enemies
+		-- Add (more) gravity to enemies, to simulate falling down faster
+		gravityEnemies			= [addActions (enemyGravity enemyObject) defaultGravityAction | enemyObject <- enemyObjects]
+		enemyShiftsGravity		= [deltaPositionVector gravityEnemy frameTime | gravityEnemy <- gravityEnemies]
+		enemyObjects2			= enemies tempGameState2
+		enemiesZipped2			= zip3 enemyObjects2 enemyShiftsGravity gravityEnemies
+		newEnemyObjects2		= [
+			Enemy {
+				enemyRect		= shiftRectangle (enemyRect enemyObject) gravityShift,
+				deathRect		= shiftRectangle (deathRect enemyObject) gravityShift,
+				enemyActions	= enemyActions enemyObject,
+				enemyGravity	= newGravity
+			} | (enemyObject, gravityShift, newGravity) <- enemiesZipped2]
 
 		-- Again, check for collisions and handle them
 		tempGameState3	= tempGameState2 {
 							player = playerObject2 {
 								playerRect		= newPlayerRectGravity,
 								playerGravity	= gravityPlayer
-							}
+							},
+							enemies = newEnemyObjects2
 						}
 		safeGameState	= handleCollisionGravity tempGameState3
 
