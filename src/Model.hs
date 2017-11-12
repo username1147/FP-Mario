@@ -51,7 +51,7 @@ initialState windowResolution@(resolutionWidth, resolutionHeight) = GameState {
 	resolution = windowResolution,
 	resolutionHalf = halfResolution,
 	level = sampleLevel,
-	lastFrameTime = -1.0,
+	lastFrameTime = 0.0,
 	elapsedTime = 0.0,
 	paused = False }
 	where

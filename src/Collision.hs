@@ -7,16 +7,6 @@ import Vector
 import Types
 
 
--- Returns True/False if the given point lies inside the rectangle. If the point
--- lies exactly on a corner or edge, it is not considered "inside"
-pointInsideRect :: Point -> Rectangle -> Bool
-pointInsideRect (x, y) (Rectangle bottomLeft topRight) = insideHorizontal && insideVertical
-	where
-		(xMin, yMin)		= bottomLeft
-		(xMax, yMax)		= topRight
-		insideHorizontal	= xMin	< x && x < xMax
-		insideVertical		= yMin	< y && y < yMax
-
 -- Returns True/False if 2 Rectangles are intersecting each other (aka, colliding).
 -- If 2 Rectangles have corners or edges exactly on top of each other, it is
 -- not considered a collision.
@@ -55,7 +45,7 @@ getCollisionDisplacement rectA rectB moveVecA = finalDisplacement
 		cornersInside	= [corner | (isInside, corner) <- zip inside cornersA, isInside]
 
 		-- Then, get the smallest vector (in length) from that intersecting
-		-- corner of rect A, to the closest corner of rect B. This will represent
+		-- corner of rect A, to the closest edge of rect B. This will represent
 		-- our initial displacement vector (as an estimate). Applying this
 		-- displacement vector to rect A *should* make sure that A and B are no
 		-- longer colliding (mathematical proof omitted, but one should be able
@@ -66,13 +56,10 @@ getCollisionDisplacement rectA rectB moveVecA = finalDisplacement
 		-- vector estimate that deviates from the reverse moveVecA as little as
 		-- possible, and it should effectively ensure that the chosen vector
 		-- is as close to the reverse moveVecA as possible, for now.
-		cornersB		= getCorners rectB
-		vectorsList		= [map (uncurry sub) (zip cornersB (replicate 4 cornerA)) | cornerA <- cornersInside]
-		tuplesList		= [ [(vectorLengthSquared vector, vector) | vector <- vectors] | vectors <- vectorsList]
-		cornerTuples	= [minimumBy compareFunc tupleList | tupleList <- tuplesList, (length tupleList) >= 1]
+		displacements	= [getDisplacement corner rectB | corner <- cornersInside]
 
 		-- If multiple, select one with lowest dot product with moveVecA
-		dotList				= [(dot moveVecA cornerVector, cornerVector) | (_, cornerVector) <- cornerTuples]
+		dotList				= [(dot moveVecA displacementVector, displacementVector) | displacementVector <- displacements]
 		(_, displacement)	= minimumBy compareFunc dotList
 
 		-- Then, based on that smallest vector and the given moveVecA, we figure
@@ -83,4 +70,4 @@ getCollisionDisplacement rectA rectB moveVecA = finalDisplacement
 		-- the initial displacement vector, so we can calculate how far along
 		-- the reverse moveVecA we have to move back.
 		reverseMoveVecA		= reverseVector moveVecA
-		finalDisplacement	= scale (projection displacement reverseMoveVecA) 100.0
+		finalDisplacement	= projection displacement reverseMoveVecA

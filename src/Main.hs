@@ -37,7 +37,7 @@ testRect3 = Rectangle {
 
 -- Configuration of the game
 screenResolution :: (Int, Int)
-screenResolution = (400, 400)
+screenResolution = (800, 600)
 
 screenOffset :: (Int, Int)
 screenOffset = (0, 0)

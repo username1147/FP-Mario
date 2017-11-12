@@ -62,7 +62,9 @@ viewPure pic gstate
 		playerCollides		= elem True $ map (isCollision playerRect) allRects
 		playerColor			= if playerCollides then yellow else green
 
-		textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
+		textPicture			= color green (text ("Last frametime: " ++ show (playerActions (player gstate))))
+		-- textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
 		scaledTextPicture	= scale 0.1 0.1 textPicture
-		infoPicture			= translate (-190.0) (170.0) scaledTextPicture
+		(transX, transY)	= halfRes
+		infoPicture			= translate (- transX + 20.0) (transY - 30.0) scaledTextPicture
 

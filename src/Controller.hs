@@ -15,19 +15,19 @@ import Collision
 --------------------------------------------------------------------------------
 moveLeft :: Float -> Action
 moveLeft currentTime = Action {
-	moveVector		= (-50.0, 0.0),
+	moveVector		= (-150.0, 0.0),
 	actionStartTime	= currentTime
 }
 
 moveRight :: Float -> Action
 moveRight currentTime = Action {
-	moveVector		= (50.0, 0.0),
+	moveVector		= (150.0, 0.0),
 	actionStartTime	= currentTime
 }
 
 moveUp :: Float -> Action
 moveUp currentTime = Action {
-	moveVector		= (0.0, 50.0),
+	moveVector		= (0.0, 500.0),
 	actionStartTime	= currentTime
 }
 
@@ -209,15 +209,16 @@ handleCollisionHelper gstate maxDepth
 		playerMoveVec		= deltaPositionVector (playerActions playerObject) (lastFrameTime gstate)
 		staticRects			= getStaticRects gstate
 		playerCollisions	= [(isCollision currPlayerRect rect, rect) | rect <- staticRects]
-		collisionStatic		= any (\x -> fst x == True) playerCollisions
+		lambdaFunc			= (\x -> fst x == True)
+		collisionStatic		= any lambdaFunc playerCollisions
 
 		-- If a collision happened, calculate displacement for the first one
-		collisions			= filter (\x -> fst x == True) playerCollisions
+		collisions			= filter lambdaFunc playerCollisions
 		displacement
 			| collisionStatic	= getCollisionDisplacement currPlayerRect firstCollisionRect playerMoveVec
 			| otherwise			= (0.0, 0.0)
 			where
-				(_, firstCollisionRect)	= (!!) collisions 0
+				firstCollisionRect = snd $ (!!) collisions 0
 
 		-- Apply first displacement to new gamestate
 		newPlayerRect		= shiftRectangle currPlayerRect displacement
@@ -247,7 +248,7 @@ step frameTime gstate
 	where
 		-- Update player positions, also add gravity
 		playerObject	= player gstate
-		playerAction	= addActions (gravity frameTime) (playerActions playerObject)
+		playerAction	= addActions (gravity (elapsedTime gstate)) (playerActions playerObject)
 		playerShift		= deltaPositionVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
@@ -256,21 +257,22 @@ step frameTime gstate
 		-- TODO: Check for player collision with enemies
 
 		-- Check for collisions and handle them
-		-- TODO: Also update enemy positions
 		tempGameState	= gstate {
 							lastFrameTime	= frameTime,
-							player			= playerObject { playerRect = newPlayerRect }
+							player			= playerObject {
+													playerRect		= newPlayerRect,
+													playerActions	= playerAction }
 						}
 		safeGameState	= handleCollision tempGameState
 
 		-- Update camera position based on new (safe) gamestate
 		playerPos		= getCenter $ playerRect $ player safeGameState
-		cameraObject	= camera gstate
-		newCameraPos	= playerPos - convertToFloatTuple (resolutionHalf gstate)
+		cameraObject	= camera safeGameState
+		newCameraPos	= playerPos - convertToFloatTuple (resolutionHalf safeGameState)
 
 		-- Update new game state
 		newGameState	= safeGameState {
 							lastFrameTime	= frameTime,
-							elapsedTime		= elapsedTime gstate + frameTime,
+							elapsedTime		= elapsedTime safeGameState + frameTime,
 							camera			= cameraObject { cameraPos = newCameraPos }
 						}

@@ -33,7 +33,7 @@ reverseAction (Action moveVec actTime) = Action {
 addActions :: Action -> Action -> Action
 addActions action1 action2 = Action {
 	moveVector		= moveVec1 + moveVec2,
-	actionStartTime	= min actTime1 actTime2 }
+	actionStartTime	= max actTime1 actTime2 }
 	where
 		moveVec1	= moveVector action1
 		moveVec2	= moveVector action2
