@@ -63,7 +63,6 @@ viewPure pic gstate
 		playerColor			= if playerCollides then yellow else green
 
 		textPicture			= color green (text ("Player Collision: " ++ show playerCollides))
-		-- textPicture			= color green (text (show (1.0 / (lastFrameTime gstate))))
 		scaledTextPicture	= scale 0.1 0.1 textPicture
 		frameTimePicture	= translate (-190.0) (170.0) scaledTextPicture
 

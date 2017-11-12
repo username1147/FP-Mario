@@ -69,17 +69,17 @@ compareFunc (length1, _) (length2, _)
 -- Returns the collision displacement vector for the two rectangles A and B that
 -- are assumed colliding. More specifically, it returns the displacement vector
 -- that will have to be applied to rectangle A such that A and B no longer
--- collide.
+-- collide. The moveVecA is the positional displacement of rectA (not speed!)
+-- that may have caused the collision (as its basically the direction of movement
+-- of rect A).
 getCollisionDisplacement :: Rectangle -> Rectangle -> Point -> Point
-getCollisionDisplacement rectA rectB moveVecA  = (displacementX, displacementY)
+getCollisionDisplacement rectA rectB moveVecA  = finalDisplacement
 	where
 		-- We figure out the displacement vector by first determining what
 		-- corners of rect A are inside rect B...
-		-- TODO: get corners of rect A that are inside rect B
 		cornersA		= getCorners rectA
 		inside			= map (uncurry pointInsideRect) (zip cornersA (replicate 4 rectB))
 		cornersInside	= [corner | (isInside, corner) <- zip inside cornersA, isInside]
-		multipleCorners	= length cornersInside > 1
 
 		-- Then, get the smallest vector (in length) from that intersecting
 		-- corner of rect A, to the closest corner of rect B. This will represent
@@ -93,17 +93,14 @@ getCollisionDisplacement rectA rectB moveVecA  = (displacementX, displacementY)
 		-- vector estimate that deviates from the reverse moveVecA as little as
 		-- possible, and it should effectively ensure that the chosen vector
 		-- is as close to the reverse moveVecA as possible, for now.
-
-		-- TODO: Get smallest vector of intersecting corner A with corners of B
-		cornersB			= getCorners rectB
-		tempVectorsList		= [map (uncurry sub) (zip cornersB (replicate 4 cornerA)) | cornerA <- cornersInside]
-		-- tempLengthsList		= [map vectorLengthSquared vectors | vectors <- tempVectors]
-		tempTuplesList		= [ [(vectorLengthSquared vector, vector) | vector <- tempVectors] | tempVectors <- tempVectorsList]
-		cornerTuples		= [minimumBy compareFunc tupleList | tupleList <- tempTuplesList]
+		cornersB		= getCorners rectB
+		vectorsList		= [map (uncurry sub) (zip cornersB (replicate 4 cornerA)) | cornerA <- cornersInside]
+		tuplesList		= [ [(vectorLengthSquared vector, vector) | vector <- vectors] | vectors <- vectorsList]
+		cornerTuples	= [minimumBy compareFunc tupleList | tupleList <- tuplesList]
 
 		-- TODO: If multiple, select one with lowest dot product with moveVecA
-		tempDotList			= [(dot moveVecA cornerVector, cornerVector) | (_, cornerVector) <- cornerTuples]
-		(_, displacement)	= minimumBy compareFunc tempDotList
+		dotList				= [(dot moveVecA cornerVector, cornerVector) | (_, cornerVector) <- cornerTuples]
+		(_, displacement)	= minimumBy compareFunc dotList
 
 		-- Then, based on that smallest vector and the given moveVecA, we figure
 		-- out how much we have to move back along the moveVecA (its reverse!),
@@ -113,6 +110,6 @@ getCollisionDisplacement rectA rectB moveVecA  = (displacementX, displacementY)
 		-- the initial displacement vector, so we can calculate how far along
 		-- the reverse moveVecA we have to move back.
 		-- TODO: Determine how far we have to move back along reverse moveVecA
-		reverseMoveVecA	= (-moveVecA)
-		displacementX = 0.0
-		displacementY = 0.0
+		reverseMoveVecA		= (-moveVecA)
+		finalDisplacement	= projection displacement reverseMoveVecA
+
