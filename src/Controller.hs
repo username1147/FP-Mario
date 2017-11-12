@@ -189,7 +189,7 @@ getEnemyRects gstate = map getRect $ enemies gstate
 -- this function, the player does not collide with static objects
 -- TODO: FINISH HIM!
 handleCollision :: GameState -> GameState
-handleCollision gstate = handleCollisionHelper gstate 10
+handleCollision gstate = handleCollisionHelper gstate 20
 
 
 -- Helper function to handle collisions up until a certain depth, given by the
@@ -198,11 +198,6 @@ handleCollision gstate = handleCollisionHelper gstate 10
 handleCollisionHelper :: GameState -> Int -> GameState
 handleCollisionHelper gstate 0 = gstate		-- Maximum recursion depth reached
 handleCollisionHelper gstate maxDepth
-	-- Check and handle collisions recursively
-	-- | collisionStatic	= newGameStateStatic
-	-- | collisionEnemy	= newGameStateEnemy
-	-- | collisionEnemies	= newGameStateEnemies
-	-- | otherwise			= gstate	-- No collisions!
 	| collisionStatic	= handleCollisionHelper newGameStateStatic (maxDepth - 1)
 	| collisionEnemy	= handleCollisionHelper newGameStateEnemy (maxDepth - 1)
 	| collisionEnemies	= handleCollisionHelper newGameStateEnemies (maxDepth - 1)

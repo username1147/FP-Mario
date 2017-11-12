@@ -19,10 +19,10 @@ pointInsideRect (x, y) (Rectangle bottomLeft topRight) = insideHorizontal && ins
 
 -- Returns True/False if 2 Rectangles are intersecting each other (aka, colliding).
 -- If 2 Rectangles have corners or edges exactly on top of each other, it is
--- also considered a collision.
+-- not considered a collision.
 isCollision :: Rectangle -> Rectangle -> Bool
 isCollision rectA rectB =
-	not (xLeftA > xRightB || xRightA < xLeftB || yTopA < yBottomB || yBottomA > yTopB)
+	not (xLeftA >= xRightB || xRightA <= xLeftB || yTopA <= yBottomB || yBottomA >= yTopB)
 	where
 		(xLeftA, yBottomA)	= bottomLeft rectA
 		(xRightA, yTopA)	= topRight rectA
@@ -46,7 +46,7 @@ compareFunc (length1, _) (length2, _)
 -- that may have caused the collision (as its basically the direction of movement
 -- of rect A).
 getCollisionDisplacement :: Rectangle -> Rectangle -> Point -> Point
-getCollisionDisplacement rectA rectB moveVecA  = displacement
+getCollisionDisplacement rectA rectB moveVecA = finalDisplacement
 	where
 		-- We figure out the displacement vector by first determining what
 		-- corners of rect A are inside rect B...
@@ -82,6 +82,5 @@ getCollisionDisplacement rectA rectB moveVecA  = displacement
 		-- we need to project the reverse moveVecA onto the system spanned by
 		-- the initial displacement vector, so we can calculate how far along
 		-- the reverse moveVecA we have to move back.
-		reverseMoveVecA		= (-moveVecA)
-		finalDisplacement	= projection displacement reverseMoveVecA
-
+		reverseMoveVecA		= reverseVector moveVecA
+		finalDisplacement	= scale (projection displacement reverseMoveVecA) 100.0

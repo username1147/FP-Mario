@@ -12,6 +12,10 @@ dot (x1, y1) (x2, y2) = x1 * x2 + y1 * y2
 sub :: Point -> Point -> Point
 sub (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
 
+-- Scales the given vector/point with the given value
+scale :: Point -> Float -> Point
+scale (x, y) s = (x * s, y * s)
+
 -- Returns the squared length of the vector
 vectorLengthSquared :: Point -> Float
 vectorLengthSquared x = dot x x
@@ -22,6 +26,10 @@ vectorLength x = sqrt $ vectorLengthSquared x
 
 -- Returns the projection of vector A on vector B
 projection :: Point -> Point -> Point
-projection pA@(xA, yA) pB = (xA * scale, yA * scale)
+projection pA pB = scale pA projectionLength
 	where
-		scale = (dot pA pB) / (vectorLengthSquared pA)
+		projectionLength = (dot pA pB) / (vectorLengthSquared pA)
+
+-- Returns the reverse vector (aka -vector)
+reverseVector :: Point -> Point
+reverseVector (x, y) = (-x, -y)

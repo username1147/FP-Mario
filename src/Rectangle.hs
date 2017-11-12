@@ -36,6 +36,22 @@ getCenter (Rectangle bottomLeft topRight) = (centerX, centerY)
 		centerX		= (x1 + x2) * 0.5
 		centerY		= (y1 + y2) * 0.5
 
+-- Returns the lowest x coordinate of the rectangle
+getMinX :: Rectangle -> Float
+getMinX (Rectangle (xBottomLeft, _) _) = xBottomLeft
+
+-- Returns the highest x coordinate of the rectangle
+getMaxX :: Rectangle -> Float
+getMaxX (Rectangle _ (xTopRight, _)) = xTopRight
+
+-- Returns the lowest y coordinate of the rectangle
+getMinY :: Rectangle -> Float
+getMinY (Rectangle (_, yBottomLeft) _) = yBottomLeft
+
+-- Returns the highest y coordinate of the rectangle
+getMaxY :: Rectangle -> Float
+getMaxY (Rectangle _ (_, yTopRight)) = yTopRight
+
 
 -- Adds the given point to the given rectangle, effectively shifting the rectangle
 shiftRectangle :: Rectangle -> Point -> Rectangle

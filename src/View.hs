@@ -42,9 +42,9 @@ viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate
 	| showNothing 	= pic
 	| paused gstate	= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
-						[Color yellow (createRectanglePicture camPos halfRes playerRect), frameTimePicture])
+						[Color yellow (createRectanglePicture camPos halfRes playerRect), infoPicture])
 	| otherwise		= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
-						[Color playerColor (createRectanglePicture camPos halfRes playerRect), frameTimePicture])
+						[Color playerColor (createRectanglePicture camPos halfRes playerRect), infoPicture])
 	where
 		halfRes				= convertToFloatTuple $ resolutionHalf gstate
 		showNothing			= infoToShow gstate == ShowNothing
@@ -62,7 +62,7 @@ viewPure pic gstate
 		playerCollides		= elem True $ map (isCollision playerRect) allRects
 		playerColor			= if playerCollides then yellow else green
 
-		textPicture			= color green (text ("Player Collision: " ++ show playerCollides))
+		textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
 		scaledTextPicture	= scale 0.1 0.1 textPicture
-		frameTimePicture	= translate (-190.0) (170.0) scaledTextPicture
+		infoPicture			= translate (-190.0) (170.0) scaledTextPicture
 
