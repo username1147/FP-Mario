@@ -189,11 +189,15 @@ data CollisionType = NormalCollision | GravityCollision
 -- Handle collision of player with static rects... Ensures that after calling
 -- this function, the player does not collide with static objects
 handleCollision :: GameState -> GameState
-handleCollision gstate = handleCollisionHelper NormalCollision gstate 20
+handleCollision gstate = handleCollisionHelper NormalCollision gstate (20 * numEnemies)
+	where
+		numEnemies = 1 + (length $ enemies gstate)
 
 -- Similar to handleCollision, except for gravity
 handleCollisionGravity :: GameState -> GameState
-handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate 20
+handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate (20 * numEnemies)
+	where
+		numEnemies = 1 + (length $ enemies gstate)
 
 
 -- Helper function to handle collisions up until a certain recursion depth,
@@ -204,10 +208,10 @@ handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate 20
 handleCollisionHelper :: CollisionType -> GameState -> Int -> GameState
 handleCollisionHelper _ gstate 0 = gstate		-- Maximum recursion depth reached
 handleCollisionHelper colisionType gstate maxDepth
-	| collisionStatic	= handleCollisionHelper colisionType newGameStateStatic (maxDepth - 1)
-	| collisionEnemy	= handleCollisionHelper colisionType newGameStateEnemy (maxDepth - 1)
-	| collisionEnemies	= handleCollisionHelper colisionType newGameStateEnemies (maxDepth - 1)
-	| otherwise			= gstate	-- No collisions!
+	| collisionStatic					= handleCollisionHelper colisionType newGameStateStatic (maxDepth - 1)
+	| any (== True) collisionEnemy		= handleCollisionHelper colisionType newGameStateEnemy (maxDepth - 1)
+	| any (== True) collisionEnemies	= handleCollisionHelper colisionType newGameStateEnemies (maxDepth - 1)
+	| otherwise							= gstate	-- No collisions!
 	where
 		-- Check for player collision with the map
 		playerObject		= player gstate
@@ -227,7 +231,7 @@ handleCollisionHelper colisionType gstate maxDepth
 			| collisionStatic	= getCollisionDisplacement currPlayerRect firstCollisionRect playerMoveVec
 			| otherwise			= (0.0, 0.0)
 			where
-				firstCollisionRect = snd $ (!!) collisions 0
+				firstCollisionRect = snd $ head collisions
 
 		-- Apply first displacement to new gamestate
 		newPlayerRect		= shiftRectangle currPlayerRect displacement
@@ -244,12 +248,53 @@ handleCollisionHelper colisionType gstate maxDepth
 									playerGravity	= newPlayerGravity } }
 
 		-- TODO: Check for a collision between the player and an enemy
-		collisionEnemy		= False
+		collisionEnemy		= [False]
 		newGameStateEnemy	= gstate
 
 		-- TODO: Check for a collision between enemies and the map
-		collisionEnemies	= False
-		newGameStateEnemies	= gstate
+		enemyObjects		= enemies gstate
+		numEnemies			= length enemyObjects
+		currEnemyRects		= map getRect enemyObjects
+		currEnemyDeathRects	= map deathRect enemyObjects
+		enemyCollisions		= [[(isCollision enemyRect rect, rect) | rect <- staticRects] | enemyRect <- currEnemyRects]
+		collisionEnemies	= [any lambdaFunc enemyCollision | enemyCollision <- enemyCollisions]
+		enemyMoveVecs
+			| colisionType == NormalCollision	= [deltaPositionVector (enemyActions enemyObject) (lastFrameTime gstate) | enemyObject <- enemyObjects]
+			| colisionType == GravityCollision	= [deltaPositionVector (enemyGravity enemyObject) (lastFrameTime gstate) | enemyObject <- enemyObjects]
+
+		-- If a collision happened, calculate displacement for the first one of each enemy
+		collisionsEnemy		= [filter lambdaFunc enemyCollision | enemyCollision <- enemyCollisions]
+		crapRectangle		= Rectangle (0.0, 0.0) (0.0, 0.0)
+		firstCollisionRects	= [if (length collisionEnemy > 0)
+									then snd $ head collisionEnemy
+									else crapRectangle
+								| collisionEnemy
+								<- collisionsEnemy]
+		displacements		 = [if (firstCollisionRect /= crapRectangle)
+									then getCollisionDisplacement currEnemyRect firstCollisionRect enemyMoveVec
+									else (0.0, 0.0)
+								| (currEnemyRect, firstCollisionRect, enemyMoveVec)
+								<- zip3 currEnemyRects firstCollisionRects enemyMoveVecs]
+
+		-- If a collision was handled, reset player gravity. NOT the player actions!
+		newEnemiesGravity	= [if (displacement /= (0.0, 0.0))
+									then enemyGravity enemObject
+									else defaultAction
+								| (enemObject, displacement)
+								<- zip enemyObjects displacements]
+		newEnemyObjects		= [
+			Enemy {
+				enemyRect		= shiftRectangle (enemyRect enemyObject) enemyDisplacement,
+				deathRect		= shiftRectangle (deathRect enemyObject) enemyDisplacement,
+				enemyActions	= enemyActions enemyObject,
+				enemyGravity	= newGravity
+			}
+			| (enemyObject, enemyDisplacement, newGravity)
+			<- zip3 enemyObjects displacements newEnemiesGravity]
+
+		newGameStateEnemies	= gstate { enemies = newEnemyObjects }
+
+		-- TODO: Check for a collision between enemies individually?
 
 
 step :: Float -> GameState -> IO GameState
@@ -270,7 +315,11 @@ step frameTime gstate
 		enemiesZipped	= zip enemyObjects enemyShifts
 		newEnemyRects	= [shiftRectangle (enemyRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemiesZipped]
 		newDeathRects	= [shiftRectangle (deathRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemiesZipped]
-		newEnemyObjects	= [enemyObject { enemyRect = newEnemyRect, deathRect = newDeathRect } | (enemyObject, newEnemyRect, newDeathRect) <- zip3 enemyObjects newEnemyRects newDeathRects]
+		newObjects		= [enemyObject { enemyRect = newEnemyRect, deathRect = newDeathRect } | (enemyObject, newEnemyRect, newDeathRect) <- zip3 enemyObjects newEnemyRects newDeathRects]
+
+		-- Super ASI mode enabled with ultra intelligence: move towards player
+		-- newEnemyObjects	= [enemObject { enemyAction = Action ()}]
+		newEnemyObjects	= newObjects
 
 		-- Check for collisions and handle them
 		tempGameState	= gstate {
