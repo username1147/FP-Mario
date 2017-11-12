@@ -6,50 +6,38 @@ import Types
 import Actions
 import Rectangle
 
-absToRelCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
-absToRelCoord p1 p2 = p1 + p2
-
--- TODO: Add adjustable screen resolution
-levelToScreenCoord :: Point -> Point -- because left-bottom of level has coord. (0, 0)
--- for the screen it is (-width/2, -height/2)
-levelToScreenCoord (x, y) = (x - 200, y - 200) -- assuming screen is 400x400
 
 
--- now create some blocks for a sample level
-block1 = FloorBlock {
-	floorBlockRect = Rectangle {
-		bottomLeft	= (0.0,	    0.0),
-		topRight	= (500.0,	50.0)
-	}
-}
-
-block2 = Block {
-	blockRect = Rectangle {
-		bottomLeft	= (300,	350),
-		topRight	= (800,	400)
-	},
-	blockDestructable = Destructable,
-	coin = Just (Coin 100)
-}
-
+-- Now create a sample level
 sampleLevel :: LevelMap
 sampleLevel = LevelMap {
-	blocks = [], -- [block2]
-	floorBlocks = [], -- [block1]
+	blocks = [Block {
+		blockRect = Rectangle {
+			bottomLeft	= (300,	350),
+			topRight	= (800,	400)
+		},
+		blockDestructable = Destructable,
+		coin = Just (Coin 100)
+	}],
+	floorBlocks = [FloorBlock {
+		floorBlockRect = Rectangle {
+			bottomLeft	= (0.0,		0.0),
+			topRight	= (500.0,	50.0)
+		}
+	}],
 	pipes = [],
 	itemBlocks = [],
 	mapHeight = 400,
 	mapLength = 800
 }
 
-initialState :: GameState
-initialState = GameState {
+
+-- The initial state is just the sample level with a default player position
+initialState :: Resolution -> GameState
+initialState windowResolution@(resolutionWidth, resolutionHeight) = GameState {
 	infoToShow = ShowGame,
 	player = Player {
-		playerRect = Rectangle {
-			bottomLeft	= (195.0, 195.0),
-			topRight	= (205.0, 205.0)
-		},
+		playerRect = playerStartRect,
 		controlledBy = Player1,
 		score = 0,
 		playerActions = defaultAction,
@@ -57,12 +45,24 @@ initialState = GameState {
 	},
 	enemies = [],
 	camera = Camera {
-		cameraPos = (0, 0),
-		cameraWidth = 400,
-		cameraHeight = 400
+		cameraPos = getCenter playerStartRect - (halfWidth, halfHeight),
+		cameraWidth = resolutionWidth,
+		cameraHeight = resolutionHeight
 	},
+	resolution = windowResolution,
+	resolutionHalf = halfResolution,
 	level = sampleLevel,
-	lastFrameTime = -1.0,
+	lastFrameTime = 0.0,
 	elapsedTime = 0.0,
-	paused = False
-}
+	paused = False }
+	where
+		-- The player starting rect is defined here so we can focus the camera
+		-- on it when we start the level
+		playerStartRect			= Rectangle {
+									bottomLeft	= (30.0, 100.0),
+									topRight	= (40.0, 110.0)
+								}
+		floatResolution 		= convertToFloatTuple windowResolution
+		halfResolution			= convertToIntTuple $ multiplyTuple floatResolution 0.5
+		(halfWidth, halfHeight)	= convertToFloatTuple halfResolution
+

@@ -7,6 +7,7 @@ import Types
 import Model
 import Actions
 import Rectangle
+import Collision
 
 
 --------------------------------------------------------------------------------
@@ -14,41 +15,35 @@ import Rectangle
 --------------------------------------------------------------------------------
 moveLeft :: Float -> Action
 moveLeft currentTime = Action {
-	directionVector			= (-1.0, 0.0),
-	verticalMovementSpeed	= 0.0,
-	horizontalMovementSpeed	= 50.0,
-	actionStartTime			= currentTime
+	moveVector		= (-150.0, 0.0),
+	actionStartTime	= currentTime
 }
 
 moveRight :: Float -> Action
 moveRight currentTime = Action {
-	directionVector			= (1.0, 0.0),
-	verticalMovementSpeed	= 0.0,
-	horizontalMovementSpeed	= 50.0,
-	actionStartTime			= currentTime
+	moveVector		= (150.0, 0.0),
+	actionStartTime	= currentTime
 }
 
 moveUp :: Float -> Action
 moveUp currentTime = Action {
-	directionVector			= (0.0, 1.0),
-	verticalMovementSpeed	= 50.0,
-	horizontalMovementSpeed	= 0.0,
-	actionStartTime			= currentTime
+	moveVector		= (0.0, 500.0),
+	actionStartTime	= currentTime
 }
 
 moveDown :: Float -> Action
 moveDown currentTime = Action {
-	directionVector			= (0.0, -1.0),
-	verticalMovementSpeed	= 50.0,
-	horizontalMovementSpeed	= 0.0,
-	actionStartTime			= currentTime
+	moveVector		= (0.0, -50.0),
+	actionStartTime	= currentTime
+}
+
+gravity :: Float -> Action
+gravity currentTime = Action {
+	moveVector		= (0.0, -9.81),
+	actionStartTime	= currentTime
 }
 
 
-
--- Supplementary function for inputKey
-shiftCameraWithMario :: Float -> Float -> Camera -> Camera
-shiftCameraWithMario x y cam = cam { cameraPos = cameraPos cam + (x, y)}
 
 togglePause :: GameState -> GameState
 togglePause gstate = gstate {paused = not (paused gstate)}
@@ -65,13 +60,10 @@ inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (0, -10) }
 			}
 	where
 		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveUp (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) moveAction
 
@@ -80,13 +72,10 @@ inputKey (EventKey (SpecialKey KeyUp) Up _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (0, -10) }
 			}
 	where
 		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveUp (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
 
@@ -97,13 +86,10 @@ inputKey (EventKey (SpecialKey KeyDown) Down _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (0, 10) }
 			}
 	where
 		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveDown (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) moveAction
 
@@ -112,13 +98,10 @@ inputKey (EventKey (SpecialKey KeyDown) Up _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (0, 10) }
 			}
 	where
 		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveDown (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
 
@@ -129,13 +112,9 @@ inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (10, 0) }
 			}
 	where
-		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveLeft (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) moveAction
 
@@ -144,13 +123,9 @@ inputKey (EventKey (SpecialKey KeyLeft) Up _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions =newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (10, 0) }
 			}
 	where
-		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveLeft (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
 
@@ -161,13 +136,9 @@ inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = case paused gstate o
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (10, 0) }
 			}
 	where
-		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveRight (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) moveAction
 
@@ -176,13 +147,9 @@ inputKey (EventKey (SpecialKey KeyRight) Up _ _) gstate = case paused gstate of
 	True -> gstate
 	False -> gstate {
 				player = playerObject { playerActions = newAction }
-				-- TODO: Move camera position updating to updateGameState function
-				-- camera = cameraObject { cameraPos = cameraPos cameraObject + (10, 0) }
 			}
 	where
-		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
-		cameraObject	= camera gstate
 		moveAction		= moveRight (elapsedTime gstate)
 		newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
 
@@ -190,34 +157,117 @@ inputKey (EventKey (SpecialKey KeyRight) Up _ _) gstate = case paused gstate of
 inputKey (EventKey (SpecialKey KeyEsc) _ _ _) _ = error "Escaped"
 inputKey (EventKey (Char 'p') Down _ _) gstate = togglePause gstate
 inputKey (EventKey (Char 'p') Up _ _) gstate = gstate
-inputKey (EventKey (Char 'r') Up _ _) gstate = initialState -- r = revert back to init.
-inputKey (EventKey (Char 'c') _ _ _) gstate = gstate {
-	infoToShow = ShowNothing,
-	camera = camera initialState,
-	paused = False
-}
+inputKey (EventKey (Char 'r') Up _ _) gstate = initialState $ resolution gstate -- r = revert back to init.
 
-inputKey _ gstate = initialState
+inputKey _ gstate = gstate
+
 
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
-step :: Float -> GameState -> IO GameState
-step frameTime gstate = return $ newGameState
+-- Returns all the static rectangles in the gamestate (e.g. blocks)
+-- Does not return rectangles of players/enemies
+getStaticRects :: GameState -> [Rectangle]
+getStaticRects gstate = floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects
 	where
-		-- Update player positions
+		levelMap			= level gstate
+		blockRects			= map getRect $ blocks levelMap
+		floorBlockRects		= map getRect $ floorBlocks levelMap
+		itemBlockRects		= map getRect $ itemBlocks levelMap
+		pipeRects			= map getRect $ pipes levelMap
+
+-- Returns all the dynamic enemy rectangles in the gamestate
+getEnemyRects :: GameState -> [Rectangle]
+getEnemyRects gstate = map getRect $ enemies gstate
+
+-- Handle collision of player with static rects... Ensures that after calling
+-- this function, the player does not collide with static objects
+-- TODO: FINISH HIM!
+handleCollision :: GameState -> GameState
+handleCollision gstate = handleCollisionHelper gstate 20
+
+
+-- Helper function to handle collisions up until a certain depth, given by the
+-- second Int parameter. Once that Int value reaches 0, maximum recursion depth
+-- has been reached.
+handleCollisionHelper :: GameState -> Int -> GameState
+handleCollisionHelper gstate 0 = gstate		-- Maximum recursion depth reached
+handleCollisionHelper gstate maxDepth
+	| collisionStatic	= handleCollisionHelper newGameStateStatic (maxDepth - 1)
+	| collisionEnemy	= handleCollisionHelper newGameStateEnemy (maxDepth - 1)
+	| collisionEnemies	= handleCollisionHelper newGameStateEnemies (maxDepth - 1)
+	| otherwise			= gstate	-- No collisions!
+	where
+		-- Check for player collision with the map
+		playerObject		= player gstate
+		currPlayerRect		= playerRect playerObject
+		playerMoveVec		= deltaPositionVector (playerActions playerObject) (lastFrameTime gstate)
+		staticRects			= getStaticRects gstate
+		playerCollisions	= [(isCollision currPlayerRect rect, rect) | rect <- staticRects]
+		lambdaFunc			= (\x -> fst x == True)
+		collisionStatic		= any lambdaFunc playerCollisions
+
+		-- If a collision happened, calculate displacement for the first one
+		collisions			= filter lambdaFunc playerCollisions
+		displacement
+			| collisionStatic	= getCollisionDisplacement currPlayerRect firstCollisionRect playerMoveVec
+			| otherwise			= (0.0, 0.0)
+			where
+				firstCollisionRect = snd $ (!!) collisions 0
+
+		-- Apply first displacement to new gamestate
+		newPlayerRect		= shiftRectangle currPlayerRect displacement
+
+		-- If a collision was handled, reset player movement
+		newPlayerAction
+			| collisionStatic	= defaultAction
+			| otherwise			= playerActions playerObject
+
+		newGameStateStatic	= gstate { player = playerObject {
+									playerRect		= newPlayerRect,
+									playerActions	= newPlayerAction } }
+
+		-- TODO: Check for a collision between the player and an enemy
+		collisionEnemy		= False
+		newGameStateEnemy	= gstate
+
+		-- TODO: Check for a collision between enemies and the map
+		collisionEnemies	= False
+		newGameStateEnemies	= gstate
+
+
+step :: Float -> GameState -> IO GameState
+step frameTime gstate
+	| paused gstate 	= return $ gstate
+	| otherwise 		= return $ newGameState
+	where
+		-- Update player positions, also add gravity
 		playerObject	= player gstate
-		playerShift		= actionMovementVector (playerActions playerObject) frameTime
+		playerAction	= addActions (gravity (elapsedTime gstate)) (playerActions playerObject)
+		playerShift		= deltaPositionVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
-		-- Update camera position
-		cameraObject	= camera gstate
-		newCameraPos	= getCenter newPlayerRect - (200, 200)	-- Screen resolution...
+		-- TODO: Update enemy positions, also add gravity
+
+		-- TODO: Check for player collision with enemies
+
+		-- Check for collisions and handle them
+		tempGameState	= gstate {
+							lastFrameTime	= frameTime,
+							player			= playerObject {
+													playerRect		= newPlayerRect,
+													playerActions	= playerAction }
+						}
+		safeGameState	= handleCollision tempGameState
+
+		-- Update camera position based on new (safe) gamestate
+		playerPos		= getCenter $ playerRect $ player safeGameState
+		cameraObject	= camera safeGameState
+		newCameraPos	= playerPos - convertToFloatTuple (resolutionHalf safeGameState)
 
 		-- Update new game state
-		newGameState	= gstate {
+		newGameState	= safeGameState {
 							lastFrameTime	= frameTime,
-							elapsedTime		= elapsedTime gstate + frameTime,
-							player 			= playerObject { playerRect = newPlayerRect },
+							elapsedTime		= elapsedTime safeGameState + frameTime,
 							camera			= cameraObject { cameraPos = newCameraPos }
 						}

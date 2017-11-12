@@ -3,23 +3,35 @@
 module Types where
 
 import Graphics.Gloss.Data.Point
-import Rectangle -- for the function shiftRectangle
+import Rectangle
 import Actions
+
+--------------------------------------------------------------------------------
+-- Data types for game code
+--------------------------------------------------------------------------------
+
+-- Screen resolution type alias
+type Resolution = (Int, Int)
+
+convertToInt :: Float -> Int
+convertToInt x = truncate x
+
+convertToFloat :: Int -> Float
+convertToFloat x = fromIntegral x
+
+multiplyTuple :: Num a => (a, a) -> a -> (a, a)
+multiplyTuple (x, y) scale = (x * scale, y * scale)
+
+convertToIntTuple :: (Float, Float) -> (Int, Int)
+convertToIntTuple (x, y) = (convertToInt x, convertToInt y)
+
+convertToFloatTuple :: (Int, Int) -> (Float, Float)
+convertToFloatTuple (x, y) = (convertToFloat x, convertToFloat y)
 
 
 --------------------------------------------------------------------------------
 -- General data types
 --------------------------------------------------------------------------------
-
-data Direction = DirLeft | DirUp | DirRight | DirDown
-	deriving (Eq, Enum)
-
-instance Show Direction where
-	show DirLeft	= "Left"
-	show DirUp		= "Up"
-	show DirRight	= "Right"
-	show DirDown	= "Down"
-
 
 data Coin = Coin Int
 	deriving (Eq, Show)
@@ -80,7 +92,7 @@ data Player = Player {
 --------------------------------------------------------------------------------
 
 data Camera = Camera {
-	cameraPos :: Point,				-- Position of the camera in the world
+	cameraPos :: Point,			-- Position of the camera in the world
 	cameraWidth :: Int,			-- How wide (horizontal) the camera can see
 	cameraHeight :: Int			-- How high (vertical) the camera can see
 } deriving (Eq, Show)
@@ -105,6 +117,8 @@ data GameState = GameState {
 	player :: Player,
 	enemies :: [Enemy],
 	camera :: Camera,
+	resolution :: Resolution,
+	resolutionHalf :: Resolution,
 	lastFrameTime :: Float,
 	elapsedTime :: Float,
 	paused :: Bool
@@ -166,31 +180,31 @@ instance Moveable Block where
 	move b _ = b -- blocks are not supposed to move
 
 instance Moveable FloorBlock where
-    getPosition f = bottomLeft $ floorBlockRect f
-    move f _ = f -- floor blocks don't move
+	getPosition f = bottomLeft $ floorBlockRect f
+	move f _ = f -- floor blocks don't move
 
 instance Moveable Pipe where
-    getPosition p = bottomLeft $ pipeRect p
-    move p _ = p -- pipes don't move
+	getPosition p = bottomLeft $ pipeRect p
+	move p _ = p -- pipes don't move
 
 instance Moveable ItemBlock where
-    getPosition i = bottomLeft $ itemBlockRect i
-    move i _ = i
+	getPosition i = bottomLeft $ itemBlockRect i
+	move i _ = i
 
 -- instance Moveable Enemy where
---     getPosition e = bottomLeft $ enemyRect e
+-- 	getPosition e = bottomLeft $ enemyRect e
 
---     move en act = en { -- move function
---             enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
---             enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
---         }
+-- 	move en act = en { -- move function
+-- 			enemyRect = shiftRectangle (getRect en) (actionMovementVector act),
+-- 			enemyActions = Action (0, 0) 0 0 (actionStartTime act) -- what to do with actionTime?
+-- 		}
 
 -- instance Moveable Player where
 -- 	getPosition pl = bottomLeft $ playerRect pl
 -- 	move pl act = pl {
---             playerRect = shiftRectangle (getRect pl) (actionMovementVector act),
---             playerActions = Action (0, 0) 0 0 (actionStartTime act)
---         }
+-- 			playerRect = shiftRectangle (getRect pl) (actionMovementVector act),
+-- 			playerActions = Action (0, 0) 0 0 (actionStartTime act)
+-- 		}
 
 
 

@@ -17,24 +17,38 @@ blockColor			= makeColorI 234 216 14 255
 enemyColor			= Color red
 
 
-view :: Picture -> GameState -> IO Picture -- GameState to be defined
+
+absToCamCoord :: Point -> Point -> Point -- abs. pos -> screen abs. pos.
+absToCamCoord camPos point = point - camPos
+
+-- TODO: Add adjustable screen resolution
+-- because left-bottom of level has coord. (0, 0), for the screen it is (-width/2, -height/2)
+-- camCoordToScreenCoord :: Point -> Resolution -> Point
+camCoordToScreenCoord :: Point -> Point -> Point
+camCoordToScreenCoord (halfResWidth, halfResHeight) (x, y) = (x - halfResWidth, y - halfResWidth)
+
+
+
+view :: Picture -> GameState -> IO Picture
 view pic = return . (viewPure pic)
 
--- functions for showing various objects
-displayRectangle :: Point -> Rectangle -> Picture
-displayRectangle cam rectangle = polygon $ map (levelToScreenCoord . (absToRelCoord cam)) (getCorners rectangle)
+-- Function for showing a rectangle as a Picture
+-- createRectanglePicture :: Point -> Resolution -> Rectangle -> Picture
+createRectanglePicture :: Point -> Point -> Rectangle -> Picture
+createRectanglePicture cam halfRes rectangle = polygon $ map ((camCoordToScreenCoord halfRes) . (absToCamCoord cam)) (getCorners rectangle)
 
 
 viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate
 	| showNothing 	= pic
-	| paused gstate	= Pictures ((map (Color red) (map (displayRectangle cam) allRects)) ++
-						[Color yellow (displayRectangle cam playerRect), frameTimePicture])
-	| otherwise		= Pictures ((map (Color red) (map (displayRectangle cam) allRects)) ++
-						[Color playerColor (displayRectangle cam playerRect), frameTimePicture])
+	| paused gstate	= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
+						[Color yellow (createRectanglePicture camPos halfRes playerRect), infoPicture])
+	| otherwise		= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
+						[Color playerColor (createRectanglePicture camPos halfRes playerRect), infoPicture])
 	where
+		halfRes				= convertToFloatTuple $ resolutionHalf gstate
 		showNothing			= infoToShow gstate == ShowNothing
-		cam					= cameraPos (camera gstate)
+		camPos				= cameraPos (camera gstate)
 		playerRect			= getRect $ player gstate
 		levelMap			= level gstate
 
@@ -48,8 +62,9 @@ viewPure pic gstate
 		playerCollides		= elem True $ map (isCollision playerRect) allRects
 		playerColor			= if playerCollides then yellow else green
 
-		textPicture			= color green (text ("Player Collision: " ++ show playerCollides))
-		-- textPicture			= color green (text (show (1.0 / (lastFrameTime gstate))))
+		textPicture			= color green (text ("Last frametime: " ++ show (playerActions (player gstate))))
+		-- textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
 		scaledTextPicture	= scale 0.1 0.1 textPicture
-		frameTimePicture	= translate (-190.0) (170.0) scaledTextPicture
+		(transX, transY)	= halfRes
+		infoPicture			= translate (-transX + 20.0) (transY - 30.0) scaledTextPicture
 
