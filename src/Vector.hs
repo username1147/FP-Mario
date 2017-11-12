@@ -3,6 +3,12 @@ module Vector where
 import Graphics.Gloss.Data.Point
 
 
+-- Epsilon value that can be used to compensate for floating-point precision
+-- errors
+epsilon :: Float
+epsilon = 0.01
+
+
 
 -- Returns the dot product between 2 vectors/points
 dot :: Point -> Point -> Float

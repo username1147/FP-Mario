@@ -38,6 +38,12 @@ moveDown currentTime = Action {
 }
 
 
+-- Given a certain (current) action, returns the new action such that the player
+-- is no longer jumper up
+stopMovingUp :: Action -> Action
+stopMovingUp (Action (x, _) time) = Action { moveVector = (x, 0.0), actionStartTime = time }
+
+
 togglePause :: GameState -> GameState
 togglePause gstate = gstate {paused = not (paused gstate)}
 
@@ -70,7 +76,8 @@ inputKey (EventKey (SpecialKey KeyUp) Up _ _) gstate = case paused gstate of
 		-- TODO: Check if we're already jumping up and act accordingly!
 		playerObject	= player gstate
 		moveAction		= moveUp (elapsedTime gstate)
-		newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
+		-- newAction		= addActions (playerActions playerObject) (reverseAction moveAction)
+		newAction		= stopMovingUp $ playerActions playerObject
 
 
 
@@ -173,28 +180,42 @@ getStaticRects gstate = floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockR
 getEnemyRects :: GameState -> [Rectangle]
 getEnemyRects gstate = map getRect $ enemies gstate
 
+
+
+-- Data type that is only used for the handle collision helper function
+data CollisionType = NormalCollision | GravityCollision
+	deriving (Eq, Enum, Show)
+
 -- Handle collision of player with static rects... Ensures that after calling
 -- this function, the player does not collide with static objects
--- TODO: FINISH HIM!
 handleCollision :: GameState -> GameState
-handleCollision gstate = handleCollisionHelper gstate 20
+handleCollision gstate = handleCollisionHelper NormalCollision gstate 20
+
+-- Similar to handleCollision, except for gravity
+handleCollisionGravity :: GameState -> GameState
+handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate 20
 
 
--- Helper function to handle collisions up until a certain depth, given by the
--- second Int parameter. Once that Int value reaches 0, maximum recursion depth
--- has been reached.
-handleCollisionHelper :: GameState -> Int -> GameState
-handleCollisionHelper gstate 0 = gstate		-- Maximum recursion depth reached
-handleCollisionHelper gstate maxDepth
-	| collisionStatic	= handleCollisionHelper newGameStateStatic (maxDepth - 1)
-	| collisionEnemy	= handleCollisionHelper newGameStateEnemy (maxDepth - 1)
-	| collisionEnemies	= handleCollisionHelper newGameStateEnemies (maxDepth - 1)
+-- Helper function to handle collisions up until a certain recursion depth,
+-- given by the second Int parameter. Once that Int value reaches 0, maximum
+-- recursion depth has been reached and the last adapted gamestate will be
+-- returned. The second argument CollisionType determines what action will
+-- be used to get the moveVector of the player (normal or gravity)
+handleCollisionHelper :: CollisionType -> GameState -> Int -> GameState
+handleCollisionHelper _ gstate 0 = gstate		-- Maximum recursion depth reached
+handleCollisionHelper colisionType gstate maxDepth
+	| collisionStatic	= handleCollisionHelper colisionType newGameStateStatic (maxDepth - 1)
+	| collisionEnemy	= handleCollisionHelper colisionType newGameStateEnemy (maxDepth - 1)
+	| collisionEnemies	= handleCollisionHelper colisionType newGameStateEnemies (maxDepth - 1)
 	| otherwise			= gstate	-- No collisions!
 	where
 		-- Check for player collision with the map
 		playerObject		= player gstate
 		currPlayerRect		= playerRect playerObject
-		playerMoveVec		= deltaPositionVector (playerActions playerObject) (lastFrameTime gstate)
+		playerMoveVec
+			| colisionType == NormalCollision	= deltaPositionVector (playerActions playerObject) (lastFrameTime gstate)
+			| colisionType == GravityCollision	= deltaPositionVector (playerGravity playerObject) (lastFrameTime gstate)
+
 		staticRects			= getStaticRects gstate
 		playerCollisions	= [(isCollision currPlayerRect rect, rect) | rect <- staticRects]
 		lambdaFunc			= (\x -> fst x == True)
@@ -211,14 +232,16 @@ handleCollisionHelper gstate maxDepth
 		-- Apply first displacement to new gamestate
 		newPlayerRect		= shiftRectangle currPlayerRect displacement
 
-		-- If a collision was handled, reset player movement
-		newPlayerAction
-			| collisionStatic	= defaultAction
-			| otherwise			= playerActions playerObject
+		-- If a collision was handled, reset player gravity. NOT the player actions!
+		newPlayerGravity
+			| collisionStatic	= defaultAction 	-- Not defaultGravityAction,
+													-- because that is added
+													-- in the step function!
+			| otherwise			= playerGravity playerObject
 
 		newGameStateStatic	= gstate { player = playerObject {
 									playerRect		= newPlayerRect,
-									playerActions	= newPlayerAction } }
+									playerGravity	= newPlayerGravity } }
 
 		-- TODO: Check for a collision between the player and an enemy
 		collisionEnemy		= False
@@ -250,7 +273,7 @@ step frameTime gstate
 		tempGameState2	= handleCollision tempGameState
 
 		-- Add (more) gravity to player, to simulate falling down faster
-		gravityPlayer 			= addActions (playerGravity playerObject) gravityAction
+		gravityPlayer 			= addActions (playerGravity playerObject) defaultGravityAction
 		playerShiftGravity		= deltaPositionVector gravityPlayer frameTime
 		playerObject2			= player tempGameState2
 		newPlayerRect2			= playerRect $ playerObject2
@@ -265,7 +288,7 @@ step frameTime gstate
 								playerGravity	= gravityPlayer
 							}
 						}
-		safeGameState	= handleCollision tempGameState3
+		safeGameState	= handleCollisionGravity tempGameState3
 
 		-- Update camera position based on new (safe) gamestate
 		playerPos		= getCenter $ playerRect $ player safeGameState

@@ -70,4 +70,4 @@ getCollisionDisplacement rectA rectB moveVecA = finalDisplacement
 		-- the initial displacement vector, so we can calculate how far along
 		-- the reverse moveVecA we have to move back.
 		reverseMoveVecA		= reverseVector moveVecA
-		finalDisplacement	= projection displacement reverseMoveVecA
+		finalDisplacement	= scale (projection displacement reverseMoveVecA) (1.0)

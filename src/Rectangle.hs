@@ -11,11 +11,6 @@ data Rectangle = Rectangle { bottomLeft :: Point, topRight :: Point }
 	deriving (Eq, Show)
 
 
--- Epsilon value that can be used to compensate for floating-point precision
--- errors
-epsilon :: Float
-epsilon = 0.01
-
 getWidth :: Rectangle -> Float
 getWidth (Rectangle (xBottomLeft, _) (xTopRight, _)) = xTopRight - xBottomLeft
 
