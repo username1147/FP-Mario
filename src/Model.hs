@@ -18,7 +18,7 @@ levelToScreenCoord (x, y) = (x - 200, y - 200) -- assuming screen is 400x400
 -- now create some blocks for a sample level
 block1 = FloorBlock {
 	floorBlockRect = Rectangle {
-		bottomLeft	= (0.0,		0.0),
+		bottomLeft	= (0.0,	    0.0),
 		topRight	= (500.0,	50.0)
 	}
 }
@@ -34,8 +34,8 @@ block2 = Block {
 
 sampleLevel :: LevelMap
 sampleLevel = LevelMap {
-	blocks = [block2],
-	floorBlocks = [block1],
+	blocks = [], -- [block2]
+	floorBlocks = [], -- [block1]
 	pipes = [],
 	itemBlocks = [],
 	mapHeight = 400,
