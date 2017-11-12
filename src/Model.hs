@@ -29,8 +29,8 @@ sampleLevel = LevelMap {
 	itemBlocks = [],
     deathBlocks = [DeathBlock {
         deathBlockRect = Rectangle {
-            bottomLeft = (-1000, -1000),
-            topRight = (10000, -975)
+            bottomLeft = (-1000, -2000),
+            topRight = (10000, -1000)
         }
     }],
 	mapHeight = 400,

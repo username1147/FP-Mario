@@ -9,12 +9,13 @@ import Graphics.Gloss
 import Graphics.Gloss.Data.Bitmap
 
 
-floorBlockColor		= makeColorI 145 87 21 255
+floorBlockColor		= makeColorI 128 0 0 255 -- 145 87 21
 pipeColor			= makeColorI 112 211 69 255
 itemBlockColor		= makeColorI 145 87 21 127
 blockColor			= makeColorI 234 216 14 255
 -- playerColor			= makeColorI 10 58 252 255
-enemyColor			= Color red
+enemyColor			= red
+deathColor          = orange
 
 
 
@@ -41,9 +42,21 @@ createRectanglePicture cam halfRes rectangle = polygon $ map ((camCoordToScreenC
 viewPure :: Picture -> GameState -> Picture
 viewPure pic gstate
 	| showNothing 	= pic
-	| paused gstate	= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
+	| paused gstate	= Pictures (
+                        (map (Color blockColor) (map (createRectanglePicture camPos halfRes) blockRects)) ++
+                        (map (Color floorBlockColor) (map (createRectanglePicture camPos halfRes) floorBlockRects)) ++
+                        (map (Color pipeColor) (map (createRectanglePicture camPos halfRes) pipeRects)) ++
+                        (map (Color itemBlockColor) (map (createRectanglePicture camPos halfRes) itemBlockRects)) ++
+                        (map (Color enemyColor) (map (createRectanglePicture camPos halfRes) enemyRects)) ++
+                        (map (Color deathColor) (map (createRectanglePicture camPos halfRes) deathRects)) ++
 						[Color yellow (createRectanglePicture camPos halfRes playerRect), infoPicture])
-	| otherwise		= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
+	| otherwise		= Pictures (
+                        (map (Color blockColor) (map (createRectanglePicture camPos halfRes) blockRects)) ++
+                        (map (Color floorBlockColor) (map (createRectanglePicture camPos halfRes) floorBlockRects)) ++
+                        (map (Color pipeColor) (map (createRectanglePicture camPos halfRes) pipeRects)) ++
+                        (map (Color itemBlockColor) (map (createRectanglePicture camPos halfRes) itemBlockRects)) ++
+                        (map (Color enemyColor) (map (createRectanglePicture camPos halfRes) enemyRects)) ++
+                        (map (Color deathColor) (map (createRectanglePicture camPos halfRes) deathRects)) ++
 						[Color playerColor (createRectanglePicture camPos halfRes playerRect), infoPicture])
 	where
         halfRes				= convertToFloatTuple $ resolutionHalf gstate

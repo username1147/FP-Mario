@@ -59,6 +59,8 @@ instance Arbitrary Enemy where
 main :: IO ()
 main = do
     picture	<- loadBMP "src/MARBLES.bmp"
+    outputFile <- return ("src/output.txt" :: FilePath)
+    appendFile outputFile "Hello, Mario"
     frames	<- generate (arbitrary :: Gen [Point])
     number	<- generate (choose (1, 10) :: Gen Int)
     bls <- generateLevelFloorBlocks 5 50
