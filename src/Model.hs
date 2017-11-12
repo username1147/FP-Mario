@@ -27,6 +27,12 @@ sampleLevel = LevelMap {
 	}],
 	pipes = [],
 	itemBlocks = [],
+    deathBlocks = [DeathBlock {
+        deathBlockRect = Rectangle {
+            bottomLeft = (0, -1000),
+            topRight = (10000, -999)
+        }
+    }],
 	mapHeight = 400,
 	mapLength = 800
 }

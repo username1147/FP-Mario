@@ -70,17 +70,18 @@ createListOfFloorBlocks n (d:ds) (l:ls) (h:hs) ref	= FloorBlock (Rectangle (ref,
 
 generateLevelFloorBlocks :: Int -> Float -> IO [FloorBlock]
 generateLevelFloorBlocks n mDist = do
-	dists <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= mDist)))
-	dists <- return (dists `add` replicate (length dists) ((-1)*(minimum dists)))
-	lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 1000)))
-	lengths <- return (lengths `add` replicate (length lengths) ((-1)*(minimum lengths) + 100))
-	lengths <- return (lengths `mult` replicate (length lengths) 5)
-	heights <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == 10) && (maximum x <= 200) && (minimum x >= -200)))
-	blockList <- return (createListOfFloorBlocks n dists lengths heights 0)
-	return blockList
-		where
-			add xs ys	= zipWith (+) xs ys
-			mult xs ys	= zipWith (*) xs ys
+    dists <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= mDist)))
+    dists <- return (dists `add` replicate (length dists) ((-1)*(minimum dists)))
+    lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 300)))
+    lengths <- return (lengths `add` replicate (length lengths) ((-1)*(minimum lengths) + 100))
+    lengths <- return (lengths `mult` replicate (length lengths) 2)
+    heights <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == 10) && (maximum x <= 200) && (minimum x >= -200)))
+    heights <- return (heights `add` replicate (length heights) ((-1)*(minimum heights) + 0))
+    blockList <- return (createListOfFloorBlocks n dists lengths heights 0)
+    return blockList
+        where
+            add xs ys	= zipWith (+) xs ys
+            mult xs ys	= zipWith (*) xs ys
 
 updateFloorBlocks :: GameState -> [FloorBlock] -> GameState
 updateFloorBlocks gstate bs = gstate { level = levelObject { floorBlocks = bs } }
