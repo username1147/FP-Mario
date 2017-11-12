@@ -64,7 +64,9 @@ spawnEnemy :: FloorBlock -> Enemy
 spawnEnemy fb@(FloorBlock {floorBlockRect = Rectangle (xl, yl) (xr, yh)}) =
     Enemy {
         enemyRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 100),
-        enemyActions = defaultAction
+        deathRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 80),
+        enemyActions = defaultAction,
+        enemyGravity = defaultGravityAction
     }
 
 spawnEnemies :: GameState -> GameState

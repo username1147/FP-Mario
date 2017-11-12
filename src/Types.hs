@@ -67,7 +67,7 @@ data DeathBlock = DeathBlock { deathBlockRect :: Rectangle }
 -- Data types with regards to enemies and players
 --------------------------------------------------------------------------------
 
-data Enemy = Enemy { enemyRect :: Rectangle, enemyActions :: Action, enemyGravity :: Action }
+data Enemy = Enemy { enemyRect :: Rectangle, deathRect :: Rectangle, enemyActions :: Action, enemyGravity :: Action }
 	deriving (Eq, Show)
 
 

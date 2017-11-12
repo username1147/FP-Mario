@@ -263,12 +263,20 @@ step frameTime gstate
 		playerShift		= deltaPositionVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
-		-- TODO: Update enemy positions,
+		-- Update enemy positions without gravity
+		enemyObjects	= enemies gstate
+		enemyActionList	= map enemyActions enemyObjects
+		enemyShifts		= [deltaPositionVector enemyAction frameTime | enemyAction <- enemyActionList]
+		enemyZipped		= zip enemyObjects enemyShifts
+		newEnemyRects	= [shiftRectangle (enemyRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemyZipped]
+		newDeathRects	= [shiftRectangle (deathRect enemyObject) enemyShift | (enemyObject, enemyShift) <- enemyZipped]
+		newEnemyObjects	= [enemyObject { enemyRect = newEnemyRect, deathRect = newDeathRect } | (enemyObject, newEnemyRect, newDeathRect) <- zip3 enemyObjects newEnemyRects newDeathRects]
 
 		-- Check for collisions and handle them
 		tempGameState	= gstate {
 							lastFrameTime	= frameTime,
-							player			= playerObject { playerRect = newPlayerRect }
+							player			= playerObject { playerRect = newPlayerRect },
+							enemies			= newEnemyObjects
 						}
 		tempGameState2	= handleCollision tempGameState
 
