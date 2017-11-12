@@ -300,8 +300,13 @@ handleCollisionHelper colisionType gstate maxDepth
 
 step :: Float -> GameState -> IO GameState
 step frameTime gstate
-	| paused gstate 	= return $ gstate
-	| otherwise 		= return $ newGameState
+	| paused gstate 	= do
+                            return $ gstate
+	| otherwise 		= do
+                            outputFile <- return ("src/output.txt" :: FilePath)
+                            appendFile outputFile ("Time elapsed:" ++ show (elapsedTime gstate) ++ "\n")
+                            print (show $ elapsedTime gstate)
+                            return $ newGameState
 	where
 		-- Update player positions without gravity
 		playerObject	= player gstate

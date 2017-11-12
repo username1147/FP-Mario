@@ -1,0 +1,7 @@
+Number of blocks: 10
+Block max. distance: 25
+Screen resolution width: 800
+Screen resolution height: 600
+Screen offset horizontal: 0
+Screen offset vertical: 0
+Frames per second: 60

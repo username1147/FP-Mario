@@ -16,24 +16,6 @@ import Actions
 import RandomGen
 
 -- For testing, 3 rectangles...
-testRect1 :: Rectangle
-testRect1 = Rectangle {
-	bottomLeft	= (2.0, 2.0),
-	topRight	= (5.0, 4.0)
-}
-
-testRect2 :: Rectangle
-testRect2 = Rectangle {
-	bottomLeft	= (6.0, 4.0),
-	topRight	= (9.0, 7.0)
-}
-
-testRect3 :: Rectangle
-testRect3 = Rectangle {
-	bottomLeft	= (3.0, 1.0),
-	topRight	= (6.0, 3.0)
-}
-
 
 -- Configuration of the game
 screenResolution :: (Int, Int)
@@ -58,33 +40,36 @@ instance Arbitrary Enemy where
 
 main :: IO ()
 main = do
-	picture	<- loadBMP "src/MARBLES.bmp"
-	outputFile <- return ("src/output.txt" :: FilePath)
-	appendFile outputFile "Hello, Mario"
-	frames	<- generate (arbitrary :: Gen [Point])
-	number	<- generate (choose (1, 10) :: Gen Int)
-	bls <- generateLevelFloorBlocks 5 50
-	print "File load"
-	print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
-	print ("Rectangles 2 and 1 collide: " ++ (show $ isCollision testRect2 testRect1))
-	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
-	print ("Rectangles 3 and 2 collide: " ++ (show $ isCollision testRect3 testRect2))
-	print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
-	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
-	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
-	print ("Random integers:" ++ (show frames) ++ ", sum: " ++ show (sum frames))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 0) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 0))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 1) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 1))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 2) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 2))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 3) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 3))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 4) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 4))
-	initialStateRandom <- return (updateFloorBlocks (initialState screenResolution) bls)
-	initialStateRandomWithEnemies <- return (spawnEnemies initialStateRandom)
-	print (show (length $ floorBlocks $ level $ initialStateRandom) ++ " floor blocks")
-	print (show (length $ enemies $ initialStateRandomWithEnemies) ++ " enemies")
-	playIO (InWindow "Counter" screenResolution screenOffset)
+    picture	<- loadBMP "src/MARBLES.bmp"
+    contents <- readFile "src/input.txt"
+    inputFileLines <- return (map words $ lines $ contents)
+    numbers <- return (map last inputFileLines)
+    print (show $ map (read :: (String -> Float)) numbers)
+    
+    nr_of_blocks <- return (read (numbers !! 0) :: Int)
+    block_max_distance <- return (read (numbers !! 1) :: Float)
+    screenResolutionWidth <- return (read (numbers !! 2) :: Int)
+    screenResolutionHeight <- return (read (numbers !! 3) :: Int)
+    screenOffsetX <- return (read (numbers !! 4) :: Int)
+    screenOffsetY <- return (read (numbers !! 5) :: Int)
+    fPS <- return (read (numbers !! 6) :: Int)
+
+    outputFile <- return ("src/output.txt" :: FilePath)
+    appendFile outputFile "Hello, Mario"
+    bls <- generateLevelFloorBlocks nr_of_blocks block_max_distance
+    print "File load"
+    print (show (bottomLeft $ floorBlockRect $ bls !! 0) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 0))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 1) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 1))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 2) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 2))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 3) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 3))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 4) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 4))
+    initialStateRandom <- return (updateFloorBlocks (initialState screenResolution) bls)
+    initialStateRandomWithEnemies <- return (spawnEnemies initialStateRandom)
+    print (show (length $ floorBlocks $ level $ initialStateRandom) ++ " floor blocks")
+    print (show (length $ enemies $ initialStateRandomWithEnemies) ++ " enemies")
+    playIO (InWindow "Counter" (screenResolutionWidth, screenResolutionHeight) (screenOffsetX, screenOffsetY))
 			black -- Background color
-			framesPerSecond -- Frames per second
+			fPS -- Frames per second
 			initialStateRandomWithEnemies -- in Model
 			(view picture) -- in View
 			input -- in Controller
