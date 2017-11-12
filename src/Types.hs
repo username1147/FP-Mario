@@ -60,6 +60,8 @@ data Pipe = Pipe { pipeRect :: Rectangle }
 data ItemBlock = ItemBlock { itemBlockRect :: Rectangle, itemBlockDestructable :: BlockDestructable, mushroom :: Mushroom }
 	deriving (Eq, Show)
 
+data DeathBlock = DeathBlock { deathBlockRect :: Rectangle }
+	deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 -- Data types with regards to enemies and players
@@ -108,6 +110,7 @@ data LevelMap = LevelMap {
 	floorBlocks :: [FloorBlock],
 	pipes :: [Pipe],
 	itemBlocks :: [ItemBlock],
+	deathBlocks :: [DeathBlock],
 	mapHeight :: Int,
 	mapLength :: Int
 } deriving (Eq, Show)
@@ -144,6 +147,9 @@ instance Rectangleable Pipe where
 
 instance Rectangleable ItemBlock where
 	getRect = itemBlockRect
+
+instance Rectangleable DeathBlock where
+	getRect = deathBlockRect
 
 instance Rectangleable Enemy where
 	getRect = enemyRect
