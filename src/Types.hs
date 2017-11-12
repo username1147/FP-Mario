@@ -3,7 +3,7 @@
 module Types where
 
 import Graphics.Gloss.Data.Point
-import Rectangle -- for the function shiftRectangle
+import Rectangle
 import Actions
 
 --------------------------------------------------------------------------------

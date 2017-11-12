@@ -7,6 +7,7 @@ import Types
 import Model
 import Actions
 import Rectangle
+import Collision
 
 
 --------------------------------------------------------------------------------
@@ -169,6 +170,81 @@ inputKey _ gstate = initialState $ resolution gstate
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
+-- Returns all the static rectangles in the gamestate (e.g. blocks)
+-- Does not return rectangles of players/enemies
+getStaticRects :: GameState -> [Rectangle]
+getStaticRects gstate = floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects
+	where
+		levelMap			= level gstate
+		blockRects			= map getRect $ blocks levelMap
+		floorBlockRects		= map getRect $ floorBlocks levelMap
+		itemBlockRects		= map getRect $ itemBlocks levelMap
+		pipeRects			= map getRect $ pipes levelMap
+
+-- Returns all the dynamic enemy rectangles in the gamestate
+getEnemyRects :: GameState -> [Rectangle]
+getEnemyRects gstate = map getRect $ enemies gstate
+
+-- Handle collision of player with static rects... Ensures that after calling
+-- this function, the player does not collide with static objects
+-- TODO: FINISH HIM!
+handleCollision :: GameState -> GameState
+handleCollision gstate = handleCollisionHelper gstate 10
+
+
+-- Helper function to handle collisions up until a certain depth, given by the
+-- second Int parameter. Once that Int value reaches 0, maximum recursion depth
+-- has been reached.
+handleCollisionHelper :: GameState -> Int -> GameState
+handleCollisionHelper gstate 0 = gstate		-- Maximum recursion depth reached
+handleCollisionHelper gstate maxDepth
+	-- Check and handle collisions recursively
+	-- | collisionStatic	= newGameStateStatic
+	-- | collisionEnemy	= newGameStateEnemy
+	-- | collisionEnemies	= newGameStateEnemies
+	-- | otherwise			= gstate	-- No collisions!
+	| collisionStatic	= handleCollisionHelper newGameStateStatic (maxDepth - 1)
+	| collisionEnemy	= handleCollisionHelper newGameStateEnemy (maxDepth - 1)
+	| collisionEnemies	= handleCollisionHelper newGameStateEnemies (maxDepth - 1)
+	| otherwise			= gstate	-- No collisions!
+	where
+		-- Check for player collision with the map
+		playerObject		= player gstate
+		currPlayerRect		= playerRect playerObject
+		playerMoveVec		= deltaPositionVector (playerActions playerObject) (lastFrameTime gstate)
+		staticRects			= getStaticRects gstate
+		playerCollisions	= [(isCollision currPlayerRect rect, rect) | rect <- staticRects]
+		collisionStatic		= any (\x -> fst x == True) playerCollisions
+
+		-- If a collision happened, calculate displacement for the first one
+		collisions			= filter (\x -> fst x == True) playerCollisions
+		displacement
+			| collisionStatic	= getCollisionDisplacement currPlayerRect firstCollisionRect playerMoveVec
+			| otherwise			= (0.0, 0.0)
+			where
+				(_, firstCollisionRect)	= (!!) collisions 0
+
+		-- Apply first displacement to new gamestate
+		newPlayerRect		= shiftRectangle currPlayerRect displacement
+
+		-- If a collision was handled, reset player movement
+		newPlayerAction
+			| collisionStatic	= defaultAction
+			| otherwise			= playerActions playerObject
+
+		newGameStateStatic	= gstate { player = playerObject {
+									playerRect		= newPlayerRect,
+									playerActions	= newPlayerAction } }
+
+		-- TODO: Check for a collision between the player and an enemy
+		collisionEnemy		= False
+		newGameStateEnemy	= gstate
+
+		-- TODO: Check for a collision between enemies and the map
+		collisionEnemies	= False
+		newGameStateEnemies	= gstate
+
+
 step :: Float -> GameState -> IO GameState
 step frameTime gstate
 	| paused gstate 	= return $ gstate
@@ -180,14 +256,26 @@ step frameTime gstate
 		playerShift		= deltaPositionVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
-		-- Update camera position
+		-- TODO: Update enemy positions, also add gravity
+
+		-- TODO: Check for player collision with enemies
+
+		-- Check for collisions and handle them
+		-- TODO: Also update enemy positions
+		tempGameState	= gstate {
+							lastFrameTime	= frameTime,
+							player			= playerObject { playerRect = newPlayerRect }
+						}
+		safeGameState	= handleCollision tempGameState
+
+		-- Update camera position based on new (safe) gamestate
+		playerPos		= getCenter $ playerRect $ player safeGameState
 		cameraObject	= camera gstate
-		newCameraPos	= getCenter newPlayerRect - convertToFloatTuple (resolutionHalf gstate)
+		newCameraPos	= playerPos - convertToFloatTuple (resolutionHalf gstate)
 
 		-- Update new game state
-		newGameState	= gstate {
+		newGameState	= safeGameState {
 							lastFrameTime	= frameTime,
 							elapsedTime		= elapsedTime gstate + frameTime,
-							player 			= playerObject { playerRect = newPlayerRect },
 							camera			= cameraObject { cameraPos = newCameraPos }
 						}

@@ -1,14 +1,11 @@
 module Collision where
 
 import Graphics.Gloss.Data.Point
-import Types
-import Rectangle
 import Data.Foldable
+import Rectangle
+import Vector
+import Types
 
-
--- To indicate from what direction the rectangles collided (first 1 with 2nd one)
-data Direction = DirLeft | DirUp | DirRight | DirDown | DirUnknown
-	deriving (Eq, Enum, Show)
 
 -- Returns True/False if the given point lies inside the rectangle. If the point
 -- lies exactly on a corner or edge, it is not considered "inside"
@@ -19,30 +16,6 @@ pointInsideRect (x, y) (Rectangle bottomLeft topRight) = insideHorizontal && ins
 		(xMax, yMax)		= topRight
 		insideHorizontal	= xMin	< x && x < xMax
 		insideVertical		= yMin	< y && y < yMax
-
-
--- Returns the dot product between 2 vectors/points
-dot :: Point -> Point -> Float
-dot (x1, y1) (x2, y2) = x1 * x2 + y1 * y2
-
--- Returns the subtraction of 2 vectors/points
-sub :: Point -> Point -> Point
-sub (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
-
--- Returns the squared length of the vector
-vectorLengthSquared :: Point -> Float
-vectorLengthSquared x = dot x x
-
--- Returns the length of the vector
-vectorLength :: Point -> Float
-vectorLength x = sqrt $ vectorLengthSquared x
-
--- Returns the projection of vector A on vector B
-projection :: Point -> Point -> Point
-projection pA@(xA, yA) pB = (xA * scale, yA * scale)
-	where
-		scale = (dot pA pB) / (vectorLengthSquared pA)
-
 
 -- Returns True/False if 2 Rectangles are intersecting each other (aka, colliding).
 -- If 2 Rectangles have corners or edges exactly on top of each other, it is
@@ -73,7 +46,7 @@ compareFunc (length1, _) (length2, _)
 -- that may have caused the collision (as its basically the direction of movement
 -- of rect A).
 getCollisionDisplacement :: Rectangle -> Rectangle -> Point -> Point
-getCollisionDisplacement rectA rectB moveVecA  = finalDisplacement
+getCollisionDisplacement rectA rectB moveVecA  = displacement
 	where
 		-- We figure out the displacement vector by first determining what
 		-- corners of rect A are inside rect B...
@@ -96,9 +69,9 @@ getCollisionDisplacement rectA rectB moveVecA  = finalDisplacement
 		cornersB		= getCorners rectB
 		vectorsList		= [map (uncurry sub) (zip cornersB (replicate 4 cornerA)) | cornerA <- cornersInside]
 		tuplesList		= [ [(vectorLengthSquared vector, vector) | vector <- vectors] | vectors <- vectorsList]
-		cornerTuples	= [minimumBy compareFunc tupleList | tupleList <- tuplesList]
+		cornerTuples	= [minimumBy compareFunc tupleList | tupleList <- tuplesList, (length tupleList) >= 1]
 
-		-- TODO: If multiple, select one with lowest dot product with moveVecA
+		-- If multiple, select one with lowest dot product with moveVecA
 		dotList				= [(dot moveVecA cornerVector, cornerVector) | (_, cornerVector) <- cornerTuples]
 		(_, displacement)	= minimumBy compareFunc dotList
 
@@ -109,7 +82,6 @@ getCollisionDisplacement rectA rectB moveVecA  = finalDisplacement
 		-- we need to project the reverse moveVecA onto the system spanned by
 		-- the initial displacement vector, so we can calculate how far along
 		-- the reverse moveVecA we have to move back.
-		-- TODO: Determine how far we have to move back along reverse moveVecA
 		reverseMoveVecA		= (-moveVecA)
 		finalDisplacement	= projection displacement reverseMoveVecA
 
