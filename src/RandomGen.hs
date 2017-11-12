@@ -59,6 +59,18 @@ generateItemBlock = do
 						return (ItemBlock rect dest Mushroom)
 -}
 
+-- assuming that the size of enemy is 50x50
+spawnEnemy :: FloorBlock -> Enemy
+spawnEnemy fb@(FloorBlock {floorBlockRect = Rectangle (xl, yl) (xr, yh)}) =
+    Enemy {
+        enemyRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 100),
+        enemyActions = defaultAction
+    }
+
+spawnEnemies :: GameState -> GameState
+spawnEnemies gstate = gstate {enemies = map spawnEnemy fbs}
+    where fbs = floorBlocks $ level $ gstate
+
 -- thinkness of a block is assumed to be 50; the first block starts at (0, 0)
 createListOfFloorBlocks :: Int -> [Float] -> [Float] -> [Float] -> Float -> [FloorBlock]
 createListOfFloorBlocks 0 _ _ _ _					= []
