@@ -58,31 +58,33 @@ instance Arbitrary Enemy where
 
 main :: IO ()
 main = do
-	picture	<- loadBMP "src/MARBLES.bmp"
-	frames	<- generate (arbitrary :: Gen [Point])
-	number	<- generate (choose (1, 10) :: Gen Int)
-	bls <- generateLevelFloorBlocks 5 50
-	print "File load"
-	print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
-	print ("Rectangles 2 and 1 collide: " ++ (show $ isCollision testRect2 testRect1))
-	print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
-	print ("Rectangles 3 and 2 collide: " ++ (show $ isCollision testRect3 testRect2))
-	print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
-	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
-	print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
-	print ("Random integers:" ++ (show frames) ++ ", sum: " ++ show (sum frames))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 0) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 0))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 1) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 1))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 2) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 2))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 3) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 3))
-	print (show (bottomLeft $ floorBlockRect $ bls !! 4) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 4))
-	initialStateRandom <- return (updateFloorBlocks (initialState screenResolution) bls)
-	print (show (length $ floorBlocks $ level $ initialStateRandom))
-	color <- return blue
-	playIO (InWindow "Counter" screenResolution screenOffset)
+    picture	<- loadBMP "src/MARBLES.bmp"
+    frames	<- generate (arbitrary :: Gen [Point])
+    number	<- generate (choose (1, 10) :: Gen Int)
+    bls <- generateLevelFloorBlocks 5 50
+    print "File load"
+    print ("Rectangles 1 and 2 collide: " ++ (show $ isCollision testRect1 testRect2))
+    print ("Rectangles 2 and 1 collide: " ++ (show $ isCollision testRect2 testRect1))
+    print ("Rectangles 2 and 3 collide: " ++ (show $ isCollision testRect2 testRect3))
+    print ("Rectangles 3 and 2 collide: " ++ (show $ isCollision testRect3 testRect2))
+    print ("Rectangles 1 and 3 collide: " ++ (show $ isCollision testRect1 testRect3))
+    print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
+    print ("Rectangles 3 and 1 collide: " ++ (show $ isCollision testRect3 testRect1))
+    print ("Random integers:" ++ (show frames) ++ ", sum: " ++ show (sum frames))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 0) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 0))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 1) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 1))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 2) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 2))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 3) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 3))
+    print (show (bottomLeft $ floorBlockRect $ bls !! 4) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 4))
+    initialStateRandom <- return (updateFloorBlocks (initialState screenResolution) bls)
+    initialStateRandomWithEnemies <- return (spawnEnemies initialStateRandom)
+    print (show (length $ floorBlocks $ level $ initialStateRandom) ++ " floor blocks")
+    print (show (length $ enemies $ initialStateRandomWithEnemies) ++ " enemies")
+    color <- return blue
+    playIO (InWindow "Counter" screenResolution screenOffset)
 			color -- Background color
 			framesPerSecond -- Frames per second
-			initialStateRandom -- in Model
+			initialStateRandomWithEnemies -- in Model
 			(view picture) -- in View
 			input -- in Controller
 			step -- in Controller

@@ -46,25 +46,27 @@ viewPure pic gstate
 	| otherwise		= Pictures ((map (Color red) (map (createRectanglePicture camPos halfRes) allRects)) ++
 						[Color playerColor (createRectanglePicture camPos halfRes playerRect), infoPicture])
 	where
-		halfRes				= convertToFloatTuple $ resolutionHalf gstate
-		showNothing			= infoToShow gstate == ShowNothing
-		camPos				= cameraPos (camera gstate)
-		playerRect			= getRect $ player gstate
-		levelMap			= level gstate
+        halfRes				= convertToFloatTuple $ resolutionHalf gstate
+        showNothing			= infoToShow gstate == ShowNothing
+        camPos				= cameraPos (camera gstate)
+        playerRect			= getRect $ player gstate
+        levelMap			= level gstate
 
-		blockRects			= map getRect (blocks levelMap)
-		floorBlockRects		= map getRect (floorBlocks levelMap)
-		itemBlockRects		= map getRect (itemBlocks levelMap)
-		pipeRects			= map getRect (pipes levelMap)
+        blockRects			= map getRect (blocks levelMap)
+        floorBlockRects		= map getRect (floorBlocks levelMap)
+        itemBlockRects		= map getRect (itemBlocks levelMap)
+        pipeRects			= map getRect (pipes levelMap)
+        deathRects          = map getRect (deathBlocks levelMap) -- add getRect instance
+        enemyRects          = map getRect (enemies gstate) -- add getRect instance
 
-		allRects			= floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects
+        allRects			= floorBlockRects ++ blockRects ++ pipeRects ++ itemBlockRects ++ deathRects ++ enemyRects
 
-		playerCollides		= elem True $ map (isCollision playerRect) allRects
-		playerColor			= if playerCollides then yellow else green
+        playerCollides		= elem True $ map (isCollision playerRect) allRects
+        playerColor			= if playerCollides then yellow else green
 
-		textPicture			= color green (text ("Last frametime: " ++ show (playerActions (player gstate))))
+        textPicture			= color green (text ("Last frametime: " ++ show (playerActions (player gstate))))
 		-- textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
-		scaledTextPicture	= scale 0.1 0.1 textPicture
-		(transX, transY)	= halfRes
-		infoPicture			= translate (-transX + 20.0) (transY - 30.0) scaledTextPicture
+        scaledTextPicture	= scale 0.1 0.1 textPicture
+        (transX, transY)	= halfRes
+        infoPicture			= translate (-transX + 20.0) (transY - 30.0) scaledTextPicture
 

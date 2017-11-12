@@ -147,6 +147,9 @@ instance Rectangleable Pipe where
 instance Rectangleable ItemBlock where
 	getRect = itemBlockRect
 
+instance Rectangleable DeathBlock where
+    getRect = deathBlockRect
+
 instance Rectangleable Enemy where
 	getRect = enemyRect
 
