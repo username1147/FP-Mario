@@ -65,7 +65,7 @@ data ItemBlock = ItemBlock { itemBlockRect :: Rectangle, itemBlockDestructable :
 -- Data types with regards to enemies and players
 --------------------------------------------------------------------------------
 
-data Enemy = Enemy { enemyRect :: Rectangle, enemyActions :: Action }
+data Enemy = Enemy { enemyRect :: Rectangle, enemyActions :: Action, enemyGravity :: Action }
 	deriving (Eq, Show)
 
 
@@ -82,6 +82,7 @@ data Player = Player {
 	controlledBy :: PlayerControlType,
 	score :: Int,
 	playerActions :: Action,
+	playerGravity :: Action,
 	size :: PlayerSize
 } deriving (Eq, Show)
 

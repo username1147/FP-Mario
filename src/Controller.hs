@@ -37,13 +37,6 @@ moveDown currentTime = Action {
 	actionStartTime	= currentTime
 }
 
-gravity :: Float -> Action
-gravity currentTime = Action {
-	moveVector		= (0.0, -9.81),
-	actionStartTime	= currentTime
-}
-
-
 
 togglePause :: GameState -> GameState
 togglePause gstate = gstate {paused = not (paused gstate)}
@@ -241,24 +234,38 @@ step frameTime gstate
 	| paused gstate 	= return $ gstate
 	| otherwise 		= return $ newGameState
 	where
-		-- Update player positions, also add gravity
+		-- Update player positions without gravity
 		playerObject	= player gstate
-		playerAction	= addActions (gravity (elapsedTime gstate)) (playerActions playerObject)
+		playerAction	= playerActions playerObject
 		playerShift		= deltaPositionVector playerAction frameTime
 		newPlayerRect	= shiftRectangle (playerRect playerObject) playerShift
 
-		-- TODO: Update enemy positions, also add gravity
-
-		-- TODO: Check for player collision with enemies
+		-- TODO: Update enemy positions,
 
 		-- Check for collisions and handle them
 		tempGameState	= gstate {
 							lastFrameTime	= frameTime,
-							player			= playerObject {
-													playerRect		= newPlayerRect,
-													playerActions	= playerAction }
+							player			= playerObject { playerRect = newPlayerRect }
 						}
-		safeGameState	= handleCollision tempGameState
+		tempGameState2	= handleCollision tempGameState
+
+		-- Add (more) gravity to player, to simulate falling down faster
+		gravityPlayer 			= addActions (playerGravity playerObject) gravityAction
+		playerShiftGravity		= deltaPositionVector gravityPlayer frameTime
+		playerObject2			= player tempGameState2
+		newPlayerRect2			= playerRect $ playerObject2
+		newPlayerRectGravity	= shiftRectangle newPlayerRect2 playerShiftGravity
+
+		-- TODO: Add gravity to enemies
+
+		-- Again, check for collisions and handle them
+		tempGameState3	= tempGameState2 {
+							player = playerObject2 {
+								playerRect		= newPlayerRectGravity,
+								playerGravity	= gravityPlayer
+							}
+						}
+		safeGameState	= handleCollision tempGameState3
 
 		-- Update camera position based on new (safe) gamestate
 		playerPos		= getCenter $ playerRect $ player safeGameState

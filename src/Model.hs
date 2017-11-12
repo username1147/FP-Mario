@@ -41,6 +41,7 @@ initialState windowResolution@(resolutionWidth, resolutionHeight) = GameState {
 		controlledBy = Player1,
 		score = 0,
 		playerActions = defaultAction,
+		playerGravity = gravityAction,
 		size = Normal
 	},
 	enemies = [],

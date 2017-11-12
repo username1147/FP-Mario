@@ -72,7 +72,7 @@ generateLevelFloorBlocks :: Int -> Float -> IO [FloorBlock]
 generateLevelFloorBlocks n mDist = do
 	dists <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= mDist)))
 	dists <- return (dists `add` replicate (length dists) ((-1)*(minimum dists)))
-	lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 1000)))
+	lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 300)))
 	lengths <- return (lengths `add` replicate (length lengths) ((-1)*(minimum lengths) + 100))
 	lengths <- return (lengths `mult` replicate (length lengths) 5)
 	heights <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == 10) && (maximum x <= 200) && (minimum x >= -200)))

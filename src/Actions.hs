@@ -20,6 +20,11 @@ defaultAction = Action {
 	actionStartTime	= 0.0
 }
 
+gravityAction :: Action
+gravityAction = Action {
+	moveVector		= (0.0, -9.81),
+	actionStartTime	= 0.0
+}
 
 -- Returns the "opposite"/reverse action
 reverseAction :: Action -> Action
