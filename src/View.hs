@@ -79,7 +79,8 @@ viewPure pic gstate
 
 		-- textPicture			= color green (text ("Game paused: " ++ show (paused gstate) ++ " Player score: " ++ show (score $ player gstate)))
 		-- textPicture			= color green (text ("Last frametime: " ++ show (lastFrameTime gstate)))
-		textPicture			= color green (text ("Enemy action: " ++ show (enemyActions ((!!) (enemies gstate) 0))))
+		-- textPicture			= color green (text ("Enemy action: " ++ show (enemyActions ((!!) (enemies gstate) 0))))
+		textPicture			= color green (text ("Time elapsed: " ++ show (elapsedTime gstate)))
 		scaledTextPicture	= scale 0.1 0.1 textPicture
 		(transX, transY)	= halfRes
 		infoPicture			= translate (-transX + 20.0) (transY - 30.0) scaledTextPicture

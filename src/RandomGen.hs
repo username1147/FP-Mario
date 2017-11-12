@@ -62,16 +62,16 @@ generateItemBlock = do
 -- assuming that the size of enemy is 50x50
 spawnEnemy :: FloorBlock -> Enemy
 spawnEnemy fb@(FloorBlock {floorBlockRect = Rectangle (xl, yl) (xr, yh)}) =
-    Enemy {
-        enemyRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 100),
-        deathRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 80),
-        enemyActions = defaultAction,
-        enemyGravity = defaultGravityAction
-    }
+	Enemy {
+		enemyRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 100),
+		deathRect = Rectangle ((xl + xr)/2 - 25, yh + 50) ((xl + xr)/2 + 25, yh + 80),
+		enemyActions = defaultAction,
+		enemyGravity = defaultGravityAction
+	}
 
 spawnEnemies :: GameState -> GameState
 spawnEnemies gstate = gstate {enemies = map spawnEnemy fbs}
-    where fbs = floorBlocks $ level $ gstate
+	where fbs = floorBlocks $ level $ gstate
 
 -- thinkness of a block is assumed to be 50; the first block starts at (0, 0)
 createListOfFloorBlocks :: Int -> [Float] -> [Float] -> [Float] -> Float -> [FloorBlock]
@@ -84,18 +84,18 @@ createListOfFloorBlocks n (d:ds) (l:ls) (h:hs) ref	= FloorBlock (Rectangle (ref,
 
 generateLevelFloorBlocks :: Int -> Float -> IO [FloorBlock]
 generateLevelFloorBlocks n mDist = do
-    dists <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= mDist)))
-    dists <- return (dists `add` replicate (length dists) ((-1)*(minimum dists)))
-    lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 300)))
-    lengths <- return (lengths `add` replicate (length lengths) ((-1)*(minimum lengths) + 100))
-    lengths <- return (lengths `mult` replicate (length lengths) 2)
-    heights <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == 10) && (maximum x <= 200) && (minimum x >= -200)))
-    heights <- return (heights `add` replicate (length heights) ((-1)*(minimum heights) + 0))
-    blockList <- return (createListOfFloorBlocks n dists lengths heights 0)
-    return blockList
-        where
-            add xs ys	= zipWith (+) xs ys
-            mult xs ys	= zipWith (*) xs ys
+	dists <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= mDist)))
+	dists <- return (dists `add` replicate (length dists) ((-1)*(minimum dists)))
+	lengths <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == n) && (maximum x <= 300)))
+	lengths <- return (lengths `add` replicate (length lengths) ((-1)*(minimum lengths) + 100))
+	lengths <- return (lengths `mult` replicate (length lengths) 2)
+	heights <- generate (suchThat (arbitrary :: Gen [Float]) (\x -> (length x == 10) && (maximum x <= 200) && (minimum x >= -200)))
+	heights <- return (heights `add` replicate (length heights) ((-1)*(minimum heights) + 0))
+	blockList <- return (createListOfFloorBlocks n dists lengths heights 0)
+	return blockList
+		where
+			add xs ys	= zipWith (+) xs ys
+			mult xs ys	= zipWith (*) xs ys
 
 updateFloorBlocks :: GameState -> [FloorBlock] -> GameState
 updateFloorBlocks gstate bs = gstate { level = levelObject { floorBlocks = bs } }
