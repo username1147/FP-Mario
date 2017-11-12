@@ -57,7 +57,7 @@ main = do
 	outputFile <- return ("src/output.txt" :: FilePath)
 	appendFile outputFile "Hello, Mario"
 	bls <- generateLevelFloorBlocks nr_of_blocks block_max_distance
-	print "File load"
+	print "Generating random level..."
 	print (show (bottomLeft $ floorBlockRect $ bls !! 0) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 0))
 	print (show (bottomLeft $ floorBlockRect $ bls !! 1) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 1))
 	print (show (bottomLeft $ floorBlockRect $ bls !! 2) ++ " " ++ show (topRight $ floorBlockRect $ bls !! 2))

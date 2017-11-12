@@ -190,13 +190,13 @@ data CollisionType = NormalCollision | GravityCollision
 -- Handle collision of player with static rects... Ensures that after calling
 -- this function, the player does not collide with static objects
 handleCollision :: GameState -> GameState
-handleCollision gstate = handleCollisionHelper NormalCollision gstate (20 * numEnemies)
+handleCollision gstate = handleCollisionHelper NormalCollision gstate (5 * numEnemies)
 	where
 		numEnemies = 1 + (length $ enemies gstate)
 
 -- Similar to handleCollision, except for gravity
 handleCollisionGravity :: GameState -> GameState
-handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate (20 * numEnemies)
+handleCollisionGravity gstate = handleCollisionHelper GravityCollision gstate (5 * numEnemies)
 	where
 		numEnemies = 1 + (length $ enemies gstate)
 
