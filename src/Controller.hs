@@ -5,6 +5,7 @@ module Controller where
 import Graphics.Gloss.Interface.IO.Game
 import Types
 import Model
+import Vector
 import Actions
 import Rectangle
 import Collision
@@ -251,7 +252,7 @@ handleCollisionHelper colisionType gstate maxDepth
 		collisionEnemy		= [False]
 		newGameStateEnemy	= gstate
 
-		-- TODO: Check for a collision between enemies and the map
+		-- Check for a collision between enemies and the map
 		enemyObjects		= enemies gstate
 		numEnemies			= length enemyObjects
 		currEnemyRects		= map getRect enemyObjects
@@ -318,8 +319,13 @@ step frameTime gstate
 		newObjects		= [enemyObject { enemyRect = newEnemyRect, deathRect = newDeathRect } | (enemyObject, newEnemyRect, newDeathRect) <- zip3 enemyObjects newEnemyRects newDeathRects]
 
 		-- Super ASI mode enabled with ultra intelligence: move towards player
-		-- newEnemyObjects	= [enemObject { enemyAction = Action ()}]
-		newEnemyObjects	= newObjects
+		playerCenter	= getCenter $ getRect playerObject
+		(playerX, _)	= playerCenter
+		xDifferences	= map (\enemy -> playerX - (getCenterX $ getRect enemy)) enemyObjects
+		xMovements		= [if x >= 0.0 then 50.0 else -50.0 | x <- xDifferences]
+		newEnemyObjects	= [enemObject { enemyActions = Action { moveVector = (xMove, 0.0), actionStartTime = 0.0 } }
+							| (enemObject, xMove)
+							<- zip newObjects xMovements]
 
 		-- Check for collisions and handle them
 		tempGameState	= gstate {

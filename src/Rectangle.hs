@@ -38,6 +38,16 @@ getCenter (Rectangle bottomLeft topRight) = (centerX, centerY)
 		centerX		= (x1 + x2) * 0.5
 		centerY		= (y1 + y2) * 0.5
 
+-- Returns the center x coordinate of the given rectangle
+getCenterX :: Rectangle -> Float
+getCenterX rect = fst $ getCenter rect
+
+-- Returns the center y coordinate of the given rectangle
+getCenterY :: Rectangle -> Float
+getCenterY rect = snd $ getCenter rect
+
+
+
 -- Returns the lowest x coordinate of the rectangle
 getMinX :: Rectangle -> Float
 getMinX (Rectangle (xBottomLeft, _) _) = xBottomLeft
