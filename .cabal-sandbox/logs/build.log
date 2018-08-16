@@ -1,0 +1,70 @@
+
+package: bmp-1.2.6.3
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+dependencies: base-4.9.1.0 binary-0.8.3.0 bytestring-0.10.8.1
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried
+
+package: gloss-1.11.1.1
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+flags: glut -glfw -explicitbackend
+dependencies: GLUT-2.7.0.10 OpenGL-3.0.1.0 base-4.9.1.0 bmp-1.2.6.3
+              bytestring-0.10.8.1 containers-0.5.7.1 ghc-prim-0.5.0.0
+              gloss-rendering-1.11.1.1
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried
+
+package: gloss-rendering-1.11.1.1
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+dependencies: GLUT-2.7.0.10 OpenGL-3.0.1.0 base-4.9.1.0 bmp-1.2.6.3
+              bytestring-0.10.8.1 containers-0.5.7.1
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried
+
+package: JuicyPixels-3.2.8.3
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+flags: -mmap
+dependencies: base-4.9.1.0 binary-0.8.3.0 bytestring-0.10.8.1
+              containers-0.5.7.1 deepseq-1.4.2.0 mtl-2.2.1 primitive-0.6.1.0
+              transformers-0.5.2.0 vector-0.11.0.0 zlib-0.6.1.2
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried
+
+package: gloss-juicy-0.2.2
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+dependencies: JuicyPixels-3.2.8.3 base-4.9.1.0 bmp-1.2.6.3
+              bytestring-0.10.8.1 gloss-1.11.1.1 vector-0.11.0.0
+              JuicyPixels-3.2.8.3 base-4.9.1.0 bmp-1.2.6.3 bytestring-0.10.8.1
+              gloss-1.11.1.1 vector-0.11.0.0
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried
+
+package: AC-Random-0.1
+os: osx
+arch: x86_64
+compiler: ghc-8.0.2
+client: cabal-install-1.24.0.2
+dependencies: base-4.9.1.0
+install-outcome: InstallOk
+docs-outcome: Ok
+tests-outcome: NotTried

@@ -1,0 +1,24 @@
+cabal: Entering directory '/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/cabal-tmp-69476/AC-Random-0.1'
+Configuring AC-Random-0.1...
+Building AC-Random-0.1...
+Preprocessing library AC-Random-0.1...
+[1 of 3] Compiling Random.MWC.Primitive ( Random/MWC/Primitive.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Primitive.o )
+[2 of 3] Compiling Random.MWC.Pure  ( Random/MWC/Pure.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Pure.o )
+[3 of 3] Compiling Random.MWC.Monadic ( Random/MWC/Monadic.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Monadic.o )
+[1 of 3] Compiling Random.MWC.Primitive ( Random/MWC/Primitive.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Primitive.p_o )
+[2 of 3] Compiling Random.MWC.Pure  ( Random/MWC/Pure.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Pure.p_o )
+[3 of 3] Compiling Random.MWC.Monadic ( Random/MWC/Monadic.hs, dist/dist-sandbox-bbe9e81a/build/Random/MWC/Monadic.p_o )
+Running Haddock for AC-Random-0.1...
+Preprocessing library AC-Random-0.1...
+Haddock coverage:
+ 100% (  6 /  6) in 'Random.MWC.Primitive'
+ 100% (  9 /  9) in 'Random.MWC.Pure'
+ 100% (  9 /  9) in 'Random.MWC.Monadic'
+Documentation created:
+dist/dist-sandbox-bbe9e81a/doc/html/AC-Random/index.html
+Creating package registration file:
+/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/pkgConf-AC-Random-0178448449274243042.1
+Installing library in /Users/ti/alex_repo/Functional
+programming/mario/FP-Mario/.cabal-sandbox/lib/x86_64-osx-ghc-8.0.2/AC-Random-0.1-94pW5Uzz9oVFfmIk0bKzUQ
+Registering AC-Random-0.1...
+cabal: Leaving directory '/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/cabal-tmp-69476/AC-Random-0.1'

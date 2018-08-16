@@ -1,0 +1,83 @@
+cabal: Entering directory '/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/cabal-tmp-31467/gloss-juicy-0.2.2'
+Configuring gloss-juicy-0.2.2...
+Building gloss-juicy-0.2.2...
+Preprocessing library gloss-juicy-0.2.2...
+[1 of 1] Compiling Graphics.Gloss.Juicy ( Graphics/Gloss/Juicy.hs, dist/dist-sandbox-bbe9e81a/build/Graphics/Gloss/Juicy.o )
+
+Graphics/Gloss/Juicy.hs:30:1: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘fromDynamicImage’:
+        Patterns not matched:
+            (ImageY16 _)
+            (ImageYA16 _)
+            (ImageRGB16 _)
+            (ImageRGBA16 _)
+            ...
+
+Graphics/Gloss/Juicy.hs:40:70: warning: [-Wname-shadowing]
+    This binding for ‘id’ shadows the existing binding
+      imported from ‘Prelude’ at Graphics/Gloss/Juicy.hs:1:8-27
+      (and originally defined in ‘GHC.Base’)
+[1 of 1] Compiling Graphics.Gloss.Juicy ( Graphics/Gloss/Juicy.hs, dist/dist-sandbox-bbe9e81a/build/Graphics/Gloss/Juicy.p_o )
+
+Graphics/Gloss/Juicy.hs:30:1: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘fromDynamicImage’:
+        Patterns not matched:
+            (ImageY16 _)
+            (ImageYA16 _)
+            (ImageRGB16 _)
+            (ImageRGBA16 _)
+            ...
+
+Graphics/Gloss/Juicy.hs:40:70: warning: [-Wname-shadowing]
+    This binding for ‘id’ shadows the existing binding
+      imported from ‘Prelude’ at Graphics/Gloss/Juicy.hs:1:8-27
+      (and originally defined in ‘GHC.Base’)
+Preprocessing executable 'gloss-juicy-viewer' for gloss-juicy-0.2.2...
+[1 of 2] Compiling Graphics.Gloss.Juicy ( Graphics/Gloss/Juicy.hs, dist/dist-sandbox-bbe9e81a/build/gloss-juicy-viewer/gloss-juicy-viewer-tmp/Graphics/Gloss/Juicy.o )
+
+Graphics/Gloss/Juicy.hs:30:1: warning: [-Wincomplete-patterns]
+    Pattern match(es) are non-exhaustive
+    In an equation for ‘fromDynamicImage’:
+        Patterns not matched:
+            (ImageY16 _)
+            (ImageYA16 _)
+            (ImageRGB16 _)
+            (ImageRGBA16 _)
+            ...
+
+Graphics/Gloss/Juicy.hs:40:70: warning: [-Wname-shadowing]
+    This binding for ‘id’ shadows the existing binding
+      imported from ‘Prelude’ at Graphics/Gloss/Juicy.hs:1:8-27
+      (and originally defined in ‘GHC.Base’)
+[2 of 2] Compiling Main             ( gloss-juicy.hs, dist/dist-sandbox-bbe9e81a/build/gloss-juicy-viewer/gloss-juicy-viewer-tmp/Main.o )
+
+gloss-juicy.hs:9:1: warning: [-Wtabs]
+    Tab character found here, and in five further locations.
+    Please use spaces instead.
+Linking dist/dist-sandbox-bbe9e81a/build/gloss-juicy-viewer/gloss-juicy-viewer ...
+Running Haddock for gloss-juicy-0.2.2...
+Preprocessing library gloss-juicy-0.2.2...
+
+Graphics/Gloss/Juicy.hs:40:70: warning: [-Wname-shadowing]
+    This binding for ‘id’ shadows the existing binding
+      imported from ‘Prelude’ at Graphics/Gloss/Juicy.hs:1:8-27
+      (and originally defined in ‘GHC.Base’)
+Haddock coverage:
+  79% ( 11 / 14) in 'Graphics.Gloss.Juicy'
+  Missing documentation for:
+    Module header
+    loadJuicyJPG (Graphics/Gloss/Juicy.hs:76)
+    loadJuicyPNG (Graphics/Gloss/Juicy.hs:80)
+Documentation created:
+dist/dist-sandbox-bbe9e81a/doc/html/gloss-juicy/index.html
+Preprocessing executable 'gloss-juicy-viewer' for gloss-juicy-0.2.2...
+Creating package registration file:
+/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/pkgConf-gloss-juicy-0.28965443031474833169.2
+Installing library in /Users/ti/alex_repo/Functional
+programming/mario/FP-Mario/.cabal-sandbox/lib/x86_64-osx-ghc-8.0.2/gloss-juicy-0.2.2-BjEmg0lvj2mIjRxFgfKKVm
+Installing executable(s) in /Users/ti/alex_repo/Functional
+programming/mario/FP-Mario/.cabal-sandbox/bin
+Registering gloss-juicy-0.2.2...
+cabal: Leaving directory '/var/folders/q5/zhn2h_ks6hn97y1zfqnd3w_w0000gw/T/cabal-tmp-31467/gloss-juicy-0.2.2'
