@@ -1,2 +1,8 @@
 project.pdf
 src/output.txt
+/.cabal-sandbox
+/dist
+/mario.aux
+/mario.hp
+/mario.prof
+/mario.ps
